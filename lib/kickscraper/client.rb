@@ -28,6 +28,24 @@ module Kickscraper
             }
         end
 
+        def ending_soon_projects
+            Kickscraper.client.raw.get("/v1/projects/ending_soon").body.projects.map { |project|
+                Project.coerce(project)
+            }
+        end
+
+        def popular_projects
+            Kickscraper.client.raw.get("/v1/projects/popular").body.projects.map { |project|
+                Project.coerce(project)
+            }
+        end
+
+        def newest_projects
+            Kickscraper.client.raw.get("/v1/projects/newest").body.projects.map { |project|
+                Project.coerce(project)
+            }
+        end
+
         def raw
             connection
         end

@@ -10,6 +10,11 @@ module Kickscraper
             @raw = Kickscraper.client.raw.get(self.urls.api.user).body
         end
 
+        def biography
+            reload! unless @biography
+            @biography ||= raw['biography']
+        end
+
         def backed_projects
         	return [] unless self.urls.api.backed_projects
             @backed_projects ||= Kickscraper.client.raw.get(URI.parse(self.urls.api.backed_projects).path).body.projects.map {|project|
