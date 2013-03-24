@@ -1,14 +1,18 @@
 # Kickscraper
 
-Kickscraper is a library for interfacing with Kickstarter's undocumented/unannounced API. 
+Kickscraper is a library for interfacing with Kickstarter's undocumented/unannounced API. With it, you can get a lot of data about projects, whether you've backed them or not, including reward levels, amount pledged, links to the videos, updates, if it's been successful or not, and details about the creator.
+
+I've begun to document all the types of data available on the <a href="https://github.com/markolson/kickscraper/wiki/Datatypes">Wiki for this project.</a> 
 
 ## Installation
 
     $ gem install kickscraper
 
-Or for use in another app, add it to your Gemfile
-   
-    gem 'kickscraper', :git => 'git://github.com/markolson/kickscraper.git'
+Or for use in another app, add it to your Gemfile 
+   	# stay crazy up to date'
+    gem 'kickscraper', :git => 'git://github.com/markolson/kickscraper.git' 
+    # or use prebuilt gems that are probably pretty stable
+    gem 'kickscraper'
 
 ## Status
 
@@ -70,7 +74,8 @@ Provided with your user credentials this will list the first 20 or so projects y
 	c.user.backed_projects.first.creator.class
 	=> Kickscraper::User
 
-	# get the thumbnail of the person that created the latest project we backed
+	# You can chain methods together and dig into the objects.
+	# So get the thumbnail of the person that created the latest project we backed
     c.user.backed_projects.first.creator.avatar.thumb
 
 	# You can search for projects
@@ -98,7 +103,7 @@ Provided with your user credentials this will list the first 20 or so projects y
 
 ## Contributing
 
-There are two good way to contributes: 
+There are two good ways to contributes: 
 
 First, by using it and creating Issues (or pinging me on twitter @mark_olson) as you find problems or rough spots. Second, by taking matters into your own hands:
 
