@@ -34,9 +34,11 @@ module Kickscraper
             self::process_api_call "projects", "popular"
         end
 
-        def newest_projects
-            self::process_api_call "projects", "newest"
+        def recently_launched_projects
+            self::process_api_call "projects", "recently_launched"
         end
+
+        alias_method :newest_projects, :recently_launched_projects
 
         def process_api_call(request_for, additional_path, query_string = "")
             
