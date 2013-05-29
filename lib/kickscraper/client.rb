@@ -15,40 +15,61 @@ module Kickscraper
         end
 
         def find_user(id)
-            User.coerce(connection.get("/v1/users/#{id}").body)
+            self::process_api_call "user", id.to_s
         end
 
-        def find_project(id)
-            Project.coerce(connection.get("/v1/projects/#{id}").body)
+        def find_project(id_or_slug)
+            self::process_api_call "project", id_or_slug.to_s
         end
 
         def search_projects(q)
-            connection.get("/v1/projects/search?q=#{q}").body.projects.map { |project|
-                Project.coerce(project)
-            }
+            self::process_api_call "projects", "search", "q=#{q}"
         end
 
         def ending_soon_projects
-            Kickscraper.client.raw.get("/v1/projects/ending_soon").body.projects.map { |project|
-                Project.coerce(project)
-            }
+            self::process_api_call "projects", "ending_soon"
         end
 
         def popular_projects
-            Kickscraper.client.raw.get("/v1/projects/popular").body.projects.map { |project|
-                Project.coerce(project)
-            }
+            self::process_api_call "projects", "popular"
         end
 
         def newest_projects
-            Kickscraper.client.raw.get("/v1/projects/newest").body.projects.map { |project|
-                Project.coerce(project)
-            }
+            self::process_api_call "projects", "newest"
         end
 
-        def raw
-            connection
+        def process_api_call(request_for, additional_path, query_string = "")
+            
+            body = connection.get(self::create_api_path(request_for, additional_path, query_string)).body
+            
+            case request_for.downcase
+            when "user"
+                User.coerce body
+            when "project"
+                Project.coerce body
+            when "projects"
+                body.projects.map { |project| Project.coerce project }
+            else
+                raise ArgumentError, "invalid api request"
+            end
         end
-
+        
+        def create_api_path(request_for, additional_path, query_string = "")
+            
+            base_path = "/v1"
+            full_uri = base_path
+            
+            case request_for.downcase
+            when "user"
+                full_uri += "/users"
+            when "project", "projects"
+                full_uri += "/projects"
+            end
+            
+            full_uri += "/" + additional_path unless additional_path.empty?
+            full_uri += "?" + query_string unless query_string.empty?
+            
+            full_uri
+        end
     end
 end
