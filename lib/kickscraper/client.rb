@@ -40,10 +40,18 @@ module Kickscraper
 
         alias_method :newest_projects, :recently_launched_projects
 
+
         def process_api_call(request_for, additional_path, query_string = "")
             
-            body = connection.get(self::create_api_path(request_for, additional_path, query_string)).body
+            # create the path to the API resource we want
+            api_path = self::create_api_path(request_for, additional_path, query_string)
             
+            
+            # make the api call
+            body = connection.get(api_path).body
+            
+            
+            # handle the response, returning an object with the results
             case request_for.downcase
             when "user"
                 User.coerce body
@@ -55,6 +63,7 @@ module Kickscraper
                 raise ArgumentError, "invalid api request"
             end
         end
+        
         
         def create_api_path(request_for, additional_path, query_string = "")
             
