@@ -1,3 +1,5 @@
+require 'uri'
+
 module Kickscraper
     class Client
         include Connection
@@ -23,7 +25,7 @@ module Kickscraper
         end
 
         def search_projects(q)
-            self::process_api_call "projects", "search", "q=#{q}"
+            self::process_api_call "projects", "search", "q=" + URI.escape(q)
         end
 
         def ending_soon_projects
@@ -51,6 +53,10 @@ module Kickscraper
             body = connection.get(api_path).body
             
             
+            # if we got an error response back, stop here and return nil
+            if !body.error_messages.nil? || body.http_code == 404 then return nil end
+            
+            
             # handle the response, returning an object with the results
             case request_for.downcase
             when "user"
@@ -58,7 +64,7 @@ module Kickscraper
             when "project"
                 Project.coerce body
             when "projects"
-                body.projects.map { |project| Project.coerce project }
+                if !body.projects.nil? then body.projects.map { |project| Project.coerce project } else [] end
             else
                 raise ArgumentError, "invalid api request"
             end
@@ -77,7 +83,7 @@ module Kickscraper
                 full_uri += "/projects"
             end
             
-            full_uri += "/" + additional_path unless additional_path.empty?
+            full_uri += "/" + URI.escape(additional_path) unless additional_path.empty?
             full_uri += "?" + query_string unless query_string.empty?
             
             full_uri
