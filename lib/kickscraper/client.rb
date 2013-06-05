@@ -64,10 +64,21 @@ module Kickscraper
             when "project"
                 Project.coerce body
             when "projects"
-                if !body.projects.nil? then body.projects.map { |project| Project.coerce project } else [] end
+                self::coerce_projects body
             else
                 raise ArgumentError, "invalid api request"
             end
+        end
+        
+        
+        def process_raw_api_url(api_url)
+            connection.get(api_url).body
+        end
+        
+        
+        def coerce_projects(body)
+            return [] if body.projects.nil?
+            body.projects.map { |project| Project.coerce project }
         end
         
         
