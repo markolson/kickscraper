@@ -8,7 +8,8 @@ I've begun to document all the types of data available on the <a href="https://g
 
     $ gem install kickscraper
 
-Or for use in another app, add it to your Gemfile 
+Or for use in another app, add it to your Gemfile
+
    	# stay crazy up to date'
     gem 'kickscraper', :git => 'git://github.com/markolson/kickscraper.git' 
     # or use prebuilt gems that are probably pretty stable
@@ -91,7 +92,14 @@ Provided with your user credentials this will list the first 20 or so projects y
 	vm.video.high
 	=> "https://d2pq0u4uni88oo.cloudfront.net/projects/56284/video-217182-h264_high.mp4?2013"
 
-	# print all the updates for all the current user's projects
+	# When searching for projects (or using convenient methods like recently_launched_projects()),
+	# you can continue the search until Kickstarter returns no more results
+	c.recently_launched_projects
+	=> [ _array of projects_ ]
+	c.load_more_projects if c.can_load_more_projects
+	=> [ _array of additional projects_ ]
+
+	# Print all the updates for all the current user's projects
     c.user.backed_projects.each { |project|
     	puts project.name.upcase
     	project.updates.reverse.each { |update|

@@ -41,6 +41,18 @@ module Kickscraper
         end
 
         alias_method :newest_projects, :recently_launched_projects
+        
+        def can_load_more_projects
+            !@more_projects_url.nil?
+        end
+        
+        def load_more_projects
+            if self::can_load_more_projects
+                self::process_api_url "projects", @more_projects_url
+            else
+                []
+            end
+        end
 
 
         def process_api_call(request_for, additional_path, query_string = "")
@@ -95,8 +107,20 @@ module Kickscraper
                 
             when "projects"
                 
-                return [] if body.projects.nil?
-                body.projects.map { |project| Project.coerce project }
+                # if the body doesn't have any projects, return an empty array
+                if body.projects.nil?
+                    
+                    @more_projects_url = nil
+                    return []
+                    
+                    
+                # else, set the url for where we can load the next batch of projects (if it
+                # exists) and then return an array of projects
+                else
+                    
+                    @more_projects_url = (!body.urls.nil? && !body.urls.api.nil? && !body.urls.api.more_projects.empty?) ? body.urls.api.more_projects : nil
+                    return body.projects.map { |project| Project.coerce project }
+                end
                 
             when "comments"
                 

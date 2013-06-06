@@ -138,6 +138,21 @@ describe Kickscraper do
       projects[0].should be_a Kickscraper::Project
       projects[0].name.should_not be_empty
     end
+    
+    it "loads more projects after a successful search" do
+      projects = @c.recently_launched_projects
+      @c.can_load_more_projects.should be_true
+      
+      projects = @c.load_more_projects
+      projects.length.should be > 0
+      projects[0].should be_a Kickscraper::Project
+      projects[0].name.should_not be_empty
+    end
+    
+    it "doesn't load more projects after an unsuccessful search" do
+      projects = @c.search_projects "asfakjssdklfjsafajdfklafjdsl"
+      @c.can_load_more_projects.should be_false
+    end
   end
   
   
