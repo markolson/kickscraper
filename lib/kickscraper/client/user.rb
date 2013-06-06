@@ -7,17 +7,23 @@ module Kickscraper
     	end
 
         def reload!
-            @raw = Kickscraper.client.process_raw_api_url(self.urls.api.user)
+            @raw = Kickscraper.client.process_api_url("User", self.urls.api.user, false)
+            Kickscraper::User::do_coercion(self)
+        end
+        
+        def biography
+            reload! unless @raw['biography']
+            @raw['biography']
         end
 
         def backed_projects
         	return [] unless self.urls.api.backed_projects
-            @backed_projects ||= Kickscraper.client.coerce_projects(Kickscraper.client.process_raw_api_url(self.urls.api.backed_projects))
+            @backed_projects ||= Kickscraper.client.process_api_url("Projects", Kickscraper.client.process_raw_api_url(self.urls.api.backed_projects))
         end
 
         def starred_projects
         	return [] unless self.urls.api.starred_projects
-            @starred_projects ||= Kickscraper.client.coerce_projects(Kickscraper.client.process_raw_api_url(self.urls.api.starred_projects))
+            @starred_projects ||= Kickscraper.client.process_api_url("Projects", Kickscraper.client.process_raw_api_url(self.urls.api.starred_projects))
         end
     end
 end

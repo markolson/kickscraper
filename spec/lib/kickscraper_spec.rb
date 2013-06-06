@@ -20,6 +20,7 @@ describe Kickscraper do
     TEST_USER_ID = 1869987317
     TEST_PROJECT_ID = 1871494789
     TEST_PROJECT_SLUG = 'wish-i-was-here-1'
+    TEST_PROJECT_NAME = "WISH I WAS HERE"
     
     
     # initialize kickscraper
@@ -47,7 +48,7 @@ describe Kickscraper do
   end
   
   
-  describe "Client" do
+  describe Kickscraper::Client do
     
     before(:all) do
       @c = Kickscraper.client
@@ -60,7 +61,7 @@ describe Kickscraper do
       user.name.should == 'Zach Braff'
     end
     
-    it "handles finding a non-existent user" do
+    it "returns nil when finding a non-existent user" do
       user = @c.find_user 9999
       user.should be_nil
     end
@@ -70,7 +71,7 @@ describe Kickscraper do
       
       project.id.should == TEST_PROJECT_ID
       project.slug.should == TEST_PROJECT_SLUG
-      project.name.should == "WISH I WAS HERE"
+      project.name.should == TEST_PROJECT_NAME
     end
     
     it "finds a project by slug" do
@@ -78,10 +79,10 @@ describe Kickscraper do
       
       project.id.should == TEST_PROJECT_ID
       project.slug.should == TEST_PROJECT_SLUG
-      project.name.should == "WISH I WAS HERE"
+      project.name.should == TEST_PROJECT_NAME
     end
     
-    it "handles finding a non-existent project" do
+    it "returns nil when finding a non-existent project" do
       project = @c.find_project 9999
       project.should be_nil
     end
@@ -90,6 +91,7 @@ describe Kickscraper do
       projects = @c.search_projects 'arduino'
       projects.length.should be > 0
       projects[0].should be_a Kickscraper::Project
+      projects[0].name.should_not be_empty
     end
     
     it "searches projects for a specific one" do
@@ -103,33 +105,56 @@ describe Kickscraper do
       projects.length.should be > 0
     end
     
-    it "handles searching for projects and finding nothing" do
+    it "returns an empty array when searching for projects and finding nothing" do
       projects = @c.search_projects "asfakjssdklfjsafajdfklafjdsl"
       projects.should be_an(Array)
       projects.should be_empty
     end
+    
+    it "finds projects ending soon" do
+      projects = @c.ending_soon_projects
+      projects.length.should be > 0
+      projects[0].should be_a Kickscraper::Project
+      projects[0].name.should_not be_empty
+    end
+    
+    it "finds popular projects" do
+      projects = @c.popular_projects
+      projects.length.should be > 0
+      projects[0].should be_a Kickscraper::Project
+      projects[0].name.should_not be_empty
+    end
+    
+    it "finds recently launched projects" do
+      projects = @c.recently_launched_projects
+      projects.length.should be > 0
+      projects[0].should be_a Kickscraper::Project
+      projects[0].name.should_not be_empty
+    end
+    
+    it "finds recently launched projects with the 'newest_projects' method for backwards compatibility" do
+      projects = @c.newest_projects
+      projects.length.should be > 0
+      projects[0].should be_a Kickscraper::Project
+      projects[0].name.should_not be_empty
+    end
   end
   
   
-  describe "User" do
+  describe Kickscraper::User do
     
     before(:all) do
       @c = Kickscraper.client
       @user = @c.find_user TEST_USER_ID
     end
     
-    it "reloads a user" do
-      @user.reload!
-      
-      @user.id.should == TEST_USER_ID
-      @user.name.should == 'Zach Braff'
-    end
-    
     it "loads all info for a user" do
-      @user.avatar.should_not be_empty
+      @user.id.should be > 0
+      @user.name.should_not be_empty
+      @user.avatar.length.should be > 0
       @user.biography.should_not be_empty
       @user.backed_projects_count.should_not be_nil
-      @user.created_at.should be > 0
+      @user.created_at.should be > 1262304000
       
       backed_projects = @user.backed_projects
       backed_projects.length.should be >= 0
@@ -139,15 +164,72 @@ describe Kickscraper do
       starred_projects.length.should be >= 0
       if starred_projects.length > 0 then starred_projects[0].should be_a Kickscraper::Project end
     end
+    
+    it "reloads" do
+      @user.reload!
+      
+      @user.id.should == TEST_USER_ID
+      @user.name.should == 'Zach Braff'
+    end
+    
+    it "loads the biography for a user that was brought in through a different API call" do
+      project = @c.find_project TEST_PROJECT_ID
+      user = project.creator
+      user.biography.should_not be_empty
+    end
   end
   
   
-  describe "Project" do
+  describe Kickscraper::Project do
     
     before(:all) do
       @c = Kickscraper.client
       @project = @c.find_project TEST_PROJECT_ID
     end
     
+    it "loads all info for a project" do
+      @project.id.should be > 0
+      @project.name.should_not be_empty
+      @project.launched_at.should be >= 1262304000
+      @project.blurb.should_not be_empty
+      @project.photo.length.should be > 0
+      @project.goal.should be > 0
+      @project.creator.should be_a Kickscraper::User
+      @project.pledged.should be >= 0
+      @project.created_at.should be >= 1262304000
+      @project.slug.should_not be_empty
+      @project.deadline.should be >= 1262304000
+      (@project.active?.is_a?(TrueClass) || @project.active?.is_a?(FalseClass)).should be_true
+      (@project.successful?.is_a?(TrueClass) || @project.successful?.is_a?(FalseClass)).should be_true
+      @project.category.should be_a Kickscraper::Category
+      @project.video.length.should be > 0
+      @project.rewards.length.should be > 0
+    end
+    
+    it "reloads" do
+      @project.reload!
+      
+      @project.id.should == TEST_PROJECT_ID
+      @project.name.should == TEST_PROJECT_NAME
+      @project.creator.should be_a Kickscraper::User
+    end
+    
+    it "loads all the extra info that must be called by a separate API call" do
+      comments = @project.comments
+      comments.length.should be >= 0
+      if comments.length > 0 then comments[0].should be_a Kickscraper::Comment end
+      
+      updates = @project.updates
+      updates.length.should be >= 0
+      if updates.length > 0 then updates[0].should be_a Kickscraper::Update end
+    end
+    
+    it "loads the rewards for a project that was brought in through a different API call" do
+      projects = @c.recently_launched_projects
+      project = projects[0]
+      
+      rewards = project.rewards
+      rewards.length.should be > 0
+    end
   end
 end

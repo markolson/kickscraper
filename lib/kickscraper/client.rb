@@ -53,32 +53,65 @@ module Kickscraper
             body = connection.get(api_path).body
             
             
-            # if we got an error response back, stop here and return nil
-            if !body.error_messages.nil? || body.http_code == 404 then return nil end
-            
-            
             # handle the response, returning an object with the results
-            case request_for.downcase
-            when "user"
-                User.coerce body
-            when "project"
-                Project.coerce body
-            when "projects"
-                self::coerce_projects body
+            self::coerce_api_response(request_for, body)
+        end
+        
+        
+        def process_api_url(request_for, api_url, coerce_response = true)
+            
+            # make the api call to whatever url we specified
+            body = connection.get(api_url).body
+            
+            
+            # if we want to coerce the response, do it now
+            if coerce_response
+                
+                self::coerce_api_response(request_for, body)
+                
+            # else, just return the raw body
             else
-                raise ArgumentError, "invalid api request"
+                
+                body
             end
         end
         
         
-        def process_raw_api_url(api_url)
-            connection.get(api_url).body
-        end
-        
-        
-        def coerce_projects(body)
-            return [] if body.projects.nil?
-            body.projects.map { |project| Project.coerce project }
+        def coerce_api_response(expected_type, body)
+            
+            # if we got an error response back, stop here and return nil
+            if !body.error_messages.nil? || body.http_code == 404 then return nil end
+            
+            
+            # otherwise, take the response from the api and coerce it to the type we want
+            case expected_type.downcase
+            when "user"
+                
+                User.coerce body
+                
+            when "project"
+                
+                Project.coerce body
+                
+            when "projects"
+                
+                return [] if body.projects.nil?
+                body.projects.map { |project| Project.coerce project }
+                
+            when "comments"
+                
+                return [] if body.comments.nil?
+                body.comments.map { |comment| Comment.coerce comment }
+                
+            when "updates"
+                
+                return [] if body.updates.nil?
+                body.updates.map { |update| Update.coerce update }
+                
+            else
+                
+                raise ArgumentError, "invalid api request type"
+            end
         end
         
         
