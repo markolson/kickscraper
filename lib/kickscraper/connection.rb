@@ -23,6 +23,7 @@ module Kickscraper
         :headers => {'Accept' => "application/json; charset=utf-8", 'User-Agent' => "Kickscraper/XXX"},
         :ssl => {:verify => false},
         :url => "https://api.kickstarter.com",
+        :proxy => Kickscraper.proxy.nil? ? "" : Kickscraper.proxy
       }
 
       @connection ||= Faraday::Connection.new(options) do |connection|
