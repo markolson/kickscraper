@@ -6,7 +6,7 @@ module Kickscraper
         coerce_key :creator, Kickscraper::User
         coerce_key :category, Kickscraper::Category
 
-        attr_accessor :rewards, :updates, :comments, :full
+        attr_accessor :comments, :updates, :rewards
 
         def to_s
             name
@@ -17,16 +17,12 @@ module Kickscraper
         end
 
         def reload!
-            @raw = Kickscraper.client.raw.get(self.urls.api.project).body
-        end
-
-        def rewards
-            reload! unless @rewards
-            @rewards ||= raw['rewards']
+            @raw = Kickscraper.client.process_api_url("Project", self.urls.api.project, false)
+            Kickscraper::Project::do_coercion(self)
         end
 
         def successful?
-           pledged >= goal
+            pledged >= goal
         end
 
         def active?
@@ -34,14 +30,18 @@ module Kickscraper
         end
 
         def comments
-            return [] unless self.urls.api.comments
+            return [] unless @comments || self.urls.api.comments
+            @comments ||= Kickscraper.client.process_api_url("Comments", self.urls.api.comments)
         end
 
         def updates
-            reload! unless self.urls.api.updates
-            @updates ||= Kickscraper.client.raw.get(URI.parse(self.urls.api.updates).path).body.updates.map {|o|
-                Update.coerce(o)
-            }
+            reload! unless @updates || self.urls.api.updates
+            @updates ||= Kickscraper.client.process_api_url("Updates", self.urls.api.updates)
+        end
+        
+        def rewards
+            reload! unless @raw['rewards']
+            @raw['rewards']
         end
     end
 end

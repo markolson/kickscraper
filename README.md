@@ -103,7 +103,7 @@ Provided with your user credentials this will list the first 20 or so projects y
 
 ## Contributing
 
-There are two good ways to contributes: 
+There are two good ways to contribute: 
 
 First, by using it and creating Issues (or pinging me on twitter @mark_olson) as you find problems or rough spots. Second, by taking matters into your own hands:
 
