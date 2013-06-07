@@ -24,20 +24,20 @@ module Kickscraper
             self::process_api_call "project", id_or_slug.to_s
         end
 
-        def search_projects(q)
-            self::process_api_call "projects", "search", "q=" + URI.escape(q)
+        def search_projects(q, page = nil)
+            self::process_api_call "projects", "search", "q=" + URI.escape(q), page
         end
 
-        def ending_soon_projects
-            self::process_api_call "projects", "ending_soon"
+        def ending_soon_projects(deadline_time = nil)
+            self::process_api_call "projects", "ending_soon", "", deadline_time
         end
 
-        def popular_projects
-            self::process_api_call "projects", "popular"
+        def popular_projects(page = nil)
+            self::process_api_call "projects", "popular", "", page
         end
 
-        def recently_launched_projects
-            self::process_api_call "projects", "recently_launched"
+        def recently_launched_projects(starting_at_time = nil)
+            self::process_api_call "projects", "recently_launched", "", starting_at_time
         end
 
         alias_method :newest_projects, :recently_launched_projects
@@ -55,10 +55,10 @@ module Kickscraper
         end
 
 
-        def process_api_call(request_for, additional_path, query_string = "")
+        def process_api_call(request_for, additional_path, query_string = "", cursor = nil)
             
             # create the path to the API resource we want
-            api_path = self::create_api_path(request_for, additional_path, query_string)
+            api_path = self::create_api_path(request_for, additional_path, query_string, cursor)
             
             
             # make the api call
@@ -139,7 +139,7 @@ module Kickscraper
         end
         
         
-        def create_api_path(request_for, additional_path, query_string = "")
+        def create_api_path(request_for, additional_path, query_string = "", cursor = nil)
             
             base_path = "/v1"
             full_uri = base_path
@@ -152,6 +152,8 @@ module Kickscraper
             end
             
             full_uri += "/" + URI.escape(additional_path) unless additional_path.empty?
+            
+            if (!cursor.nil? && cursor > 0) then query_string = query_string.empty? ? "cursor=#{cursor}" : "#{query_string}&cursor=#{cursor}" end
             full_uri += "?" + query_string unless query_string.empty?
             
             full_uri
