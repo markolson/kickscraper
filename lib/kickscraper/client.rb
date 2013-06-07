@@ -118,7 +118,7 @@ module Kickscraper
                 # exists) and then return an array of projects
                 else
                     
-                    @more_projects_url = (!body.urls.nil? && !body.urls.api.nil? && !body.urls.api.more_projects.empty?) ? body.urls.api.more_projects : nil
+                    @more_projects_url = (!body.urls.nil? && !body.urls.api.nil? && !body.urls.api.more_projects.nil? && !body.urls.api.more_projects.empty?) ? body.urls.api.more_projects : nil
                     return body.projects.map { |project| Project.coerce project }
                 end
                 
