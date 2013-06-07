@@ -54,6 +54,19 @@ module Kickscraper
             end
         end
 
+        def categories
+            self::process_api_call "categories", ""
+        end
+
+        def category(id_or_name = nil)
+            if id_or_name.is_a? String
+               id_or_name = categories.find{|i| i.name.downcase.start_with? id_or_name.downcase}
+               p id_or_name.methods
+               return id_or_name
+            end
+            self::process_api_call "categories", id_or_name
+        end
+
 
         def process_api_call(request_for, additional_path, query_string = "")
             
@@ -132,6 +145,9 @@ module Kickscraper
                 return [] if body.updates.nil?
                 body.updates.map { |update| Update.coerce update }
                 
+            when "categories"
+                return [] if body.categories.nil?
+                body.categories.map { |category| Category.coerce category }
             else
                 
                 raise ArgumentError, "invalid api request type"
@@ -149,6 +165,8 @@ module Kickscraper
                 full_uri += "/users"
             when "project", "projects"
                 full_uri += "/projects"
+            when "categories"
+                full_uri += "/categories"
             end
             
             full_uri += "/" + URI.escape(additional_path) unless additional_path.empty?

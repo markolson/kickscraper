@@ -49,6 +49,7 @@ describe Kickscraper do
   
   
   describe Kickscraper::Client do
+    let(:client) { Kickscraper.client }
     
     before(:all) do
       @c = Kickscraper.client
@@ -153,6 +154,22 @@ describe Kickscraper do
       projects = @c.search_projects "asfakjssdklfjsafajdfklafjdsl"
       @c.can_load_more_projects.should be_false
     end
+
+    it "lists all categories" do
+      categories = @c.categories
+
+      categories.should_not be_empty
+      categories[0].should be_a Kickscraper::Category
+      categories[0].name.should_not be_empty
+    end
+
+    it "loads projects in a category from string" do
+      projects = client.category('design').projects
+
+      projects.should_not be_empty
+      projects.first.should be_a Kickscraper::Project
+      projects[0].name.should_not be_empty
+    end
   end
   
   
@@ -194,6 +211,19 @@ describe Kickscraper do
     end
   end
   
+  describe Kickscraper::Category do
+    subject { client.categories.first }
+    let(:client) { Kickscraper.client }
+
+    it "loads category info" do
+      subject.should be_a Kickscraper::Category
+
+      subject.name.should_not be_empty
+      subject.projects_count.should be > 0
+      subject.urls.should_not be_empty
+      subject.urls.api.should_not be_empty
+    end
+  end
   
   describe Kickscraper::Project do
     
