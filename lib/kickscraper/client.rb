@@ -59,12 +59,8 @@ module Kickscraper
         end
 
         def category(id_or_name = nil)
-            if id_or_name.is_a? String
-               id_or_name = categories.find{|i| i.name.downcase.start_with? id_or_name.downcase}
-               p id_or_name.methods
-               return id_or_name
-            end
-            self::process_api_call "categories", id_or_name
+            return categories.find{|i| i.name.downcase.start_with? id_or_name.downcase} if id_or_name.is_a? String
+            self::process_api_call "categories", id_or_name.to_s
         end
 
 
