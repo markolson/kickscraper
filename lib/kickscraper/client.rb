@@ -28,16 +28,16 @@ module Kickscraper
             self::process_api_call "projects", "search", "q=" + URI.escape(q), page
         end
 
-        def ending_soon_projects(deadline_time = nil)
-            self::process_api_call "projects", "ending_soon", "", deadline_time
+        def ending_soon_projects(deadline_timestamp = nil)
+            self::process_api_call "projects", "ending_soon", "", deadline_timestamp
         end
 
         def popular_projects(page = nil)
             self::process_api_call "projects", "popular", "", page
         end
 
-        def recently_launched_projects(starting_at_time = nil)
-            self::process_api_call "projects", "recently_launched", "", starting_at_time
+        def recently_launched_projects(starting_at_timestamp = nil)
+            self::process_api_call "projects", "recently_launched", "", starting_at_timestamp
         end
 
         alias_method :newest_projects, :recently_launched_projects
@@ -141,9 +141,12 @@ module Kickscraper
         
         def create_api_path(request_for, additional_path, query_string = "", cursor = nil)
             
+            # start with the base path
             base_path = "/v1"
             full_uri = base_path
             
+            
+            # set a specific sub path for users and projects
             case request_for.downcase
             when "user"
                 full_uri += "/users"
@@ -151,11 +154,21 @@ module Kickscraper
                 full_uri += "/projects"
             end
             
+            
+            # add the additional path if we have it
             full_uri += "/" + URI.escape(additional_path) unless additional_path.empty?
             
-            if (!cursor.nil? && cursor > 0) then query_string = query_string.empty? ? "cursor=#{cursor}" : "#{query_string}&cursor=#{cursor}" end
+            
+            # add the cursor to the query string if we have it
+            cursor = cursor.to_i
+            if cursor > 0 then query_string = query_string.empty? ? "cursor=#{cursor}" : "#{query_string}&cursor=#{cursor}" end
+            
+            
+            # add the query string if we have it
             full_uri += "?" + query_string unless query_string.empty?
             
+            
+            # return the final uri
             full_uri
         end
     end
