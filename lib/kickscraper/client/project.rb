@@ -1,5 +1,5 @@
 require_relative 'user.rb'
-require_relative 'update.rb'
+require_relative 'category.rb'
 
 module Kickscraper
     class Project < Api
