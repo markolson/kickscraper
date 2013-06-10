@@ -3,7 +3,9 @@ require 'uri'
 module Kickscraper
     class Client
         include Connection
+        
         attr_accessor :user
+        
         def initialize
             if Kickscraper.token.nil?
                 token_response = connection.post('xauth/access_token?client_id=2II5GGBZLOOZAA5XBU1U0Y44BU57Q58L8KOGM7H0E0YFHP3KTG', {'email' => Kickscraper.email, 'password' => Kickscraper.password }.to_json)
@@ -62,37 +64,47 @@ module Kickscraper
             
             
             # make the api call
-            body = connection.get(api_path).body
+            response = connection.get(api_path)
             
             
             # handle the response, returning an object with the results
-            self::coerce_api_response(request_for, body)
+            self::coerce_api_response(request_for, response)
         end
         
         
         def process_api_url(request_for, api_url, coerce_response = true)
             
             # make the api call to whatever url we specified
-            body = connection.get(api_url).body
+            response = connection.get(api_url)
             
             
             # if we want to coerce the response, do it now
             if coerce_response
                 
-                self::coerce_api_response(request_for, body)
+                self::coerce_api_response(request_for, response)
                 
             # else, just return the raw body
             else
                 
-                body
+                response.body
             end
         end
         
         
-        def coerce_api_response(expected_type, body)
+        def coerce_api_response(expected_type, response)
             
-            # if we got an error response back, stop here and return nil
-            if !body.error_messages.nil? || body.http_code == 404 then return nil end
+            # define what we should return as an empty response, based on the expected type
+            types_that_should_return_an_array = ["projects", "comments", "updates"]
+            empty_response = (types_that_should_return_an_array.include? expected_type) ? [] : nil
+            
+            
+            # get the body from the response
+            body = response.body
+            
+            
+            # if we got an error response back, stop here and return an empty response
+            return empty_response if response.headers['status'].to_i >= 400 || !response.headers['content-type'].start_with?('application/json')
+            return empty_response if !body.error_messages.nil? || body.http_code == 404
             
             
             # otherwise, take the response from the api and coerce it to the type we want
@@ -111,7 +123,7 @@ module Kickscraper
                 if body.projects.nil?
                     
                     @more_projects_url = nil
-                    return []
+                    return empty_response
                     
                     
                 # else, set the url for where we can load the next batch of projects (if it
@@ -124,12 +136,12 @@ module Kickscraper
                 
             when "comments"
                 
-                return [] if body.comments.nil?
+                return empty_response if body.comments.nil?
                 body.comments.map { |comment| Comment.coerce comment }
                 
             when "updates"
                 
-                return [] if body.updates.nil?
+                return empty_response if body.updates.nil?
                 body.updates.map { |update| Update.coerce update }
                 
             else
