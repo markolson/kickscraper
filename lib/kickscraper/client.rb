@@ -46,6 +46,8 @@ module Kickscraper
             !@more_projects_url.nil?
         end
         
+        alias_method :more_projects_available?, :can_load_more_projects
+
         def load_more_projects
             if self::can_load_more_projects
                 self::process_api_url "projects", @more_projects_url
