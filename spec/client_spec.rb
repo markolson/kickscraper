@@ -150,8 +150,8 @@
       projects[0].name.should_not be_empty
     end
 
-    it "loads projects in a category from string" do
-      category = client.category(TEST_CATEGORY_NAME)
+    it "loads projects in a category from an id" do
+      category = client.category(TEST_CATEGORY_ID)
       category.name.should eq TEST_CATEGORY_NAME
 
       projects = category.projects

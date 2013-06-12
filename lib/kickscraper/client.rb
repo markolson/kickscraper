@@ -64,7 +64,7 @@ module Kickscraper
 
         def category(id_or_name = nil)
             return categories.find{|i| i.name.downcase.start_with? id_or_name.downcase} if id_or_name.is_a? String
-            self::process_api_call "categories", id_or_name.to_s
+                self::process_api_call "category", id_or_name.to_s
         end
 
 
@@ -105,13 +105,13 @@ module Kickscraper
         def coerce_api_response(expected_type, response)
             
             # define what we should return as an empty response, based on the expected type
-            types_that_should_return_an_array = ["projects", "comments", "updates"]
+            types_that_should_return_an_array = ["projects", "comments", "updates", "categories"]
             empty_response = (types_that_should_return_an_array.include? expected_type) ? [] : nil
             
             
             # get the body from the response
             body = response.body
-            
+
             
             # if we got an error response back, stop here and return an empty response
             return empty_response if response.headers['status'].to_i >= 400 || !response.headers['content-type'].start_with?('application/json')
@@ -156,10 +156,13 @@ module Kickscraper
                 body.updates.map { |update| Update.coerce update }
                 
             when "categories"
-                return [] if body.categories.nil?
+                return empty_response if body.categories.nil?
                 body.categories.map { |category| Category.coerce category }
-            else
-                
+            
+            when "category"
+                Category.coerce body
+
+            else    
                 raise ArgumentError, "invalid api request type"
             end
         end
@@ -178,7 +181,7 @@ module Kickscraper
                 full_uri += "/users"
             when "project", "projects"
                 full_uri += "/projects"
-            when "categories"
+            when "category", "categories"
                 full_uri += "/categories"
             end
             
