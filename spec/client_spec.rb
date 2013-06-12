@@ -103,6 +103,34 @@
       client.can_load_more_projects.should be_false
     end
 
+    it "loads recently launched projects starting at a specific timestamp" do
+      projects = client.recently_launched_projects((Time.now - (2 * 24 * 60 * 60)).to_i)
+      projects.length.should be > 0
+      projects[0].should be_a Kickscraper::Project
+      projects[0].name.should_not be_empty
+    end
+    
+    it "loads popular projects starting at a specific set" do
+      projects = client.popular_projects(30)
+      projects.length.should be > 0
+      projects[0].should be_a Kickscraper::Project
+      projects[0].name.should_not be_empty
+    end
+    
+    it "loads projects ending soon starting at a specific deadline" do
+      projects = client.ending_soon_projects((Time.now + (2 * 24 * 60 * 60)).to_i)
+      projects.length.should be > 0
+      projects[0].should be_a Kickscraper::Project
+      projects[0].name.should_not be_empty
+    end
+    
+    it "searches for projects starting at a specific page of results" do
+      projects = client.search_projects('arduino', 2)
+      projects.length.should be > 0
+      projects[0].should be_a Kickscraper::Project
+      projects[0].name.should_not be_empty
+    end
+
     it "lists all categories" do
       categories = client.categories
 
