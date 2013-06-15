@@ -1,7 +1,5 @@
 describe Kickscraper::Client do
   let(:client) { Kickscraper.client }
-
-  before(:each) { Cachy.send(:memory_store).clear }
   
   context "finds a user by id" do
     subject(:user) { client.find_user TEST_USER_ID }
