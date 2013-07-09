@@ -20,7 +20,7 @@ describe Kickscraper::Category do
 
   context "projects" do
     subject { category.projects }
-    it_returns "a collection of Projects"
+    it_returns "a collection", Kickscraper::Project
   end
 end
 
