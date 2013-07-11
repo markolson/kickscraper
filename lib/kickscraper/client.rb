@@ -44,14 +44,14 @@ module Kickscraper
 
         alias_method :newest_projects, :recently_launched_projects
         
-        def can_load_more_projects
+        def more_projects_available?
             !@more_projects_url.nil?
         end
         
-        alias_method :more_projects_available?, :can_load_more_projects
+        alias_method :can_load_more_projects, :more_projects_available?
 
         def load_more_projects
-            if self::can_load_more_projects
+            if self::more_projects_available?
                 self::process_api_url "projects", @more_projects_url
             else
                 []

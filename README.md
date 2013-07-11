@@ -96,7 +96,7 @@ Provided with your user credentials this will list the first 20 or so projects y
 	# you can continue the search until Kickstarter returns no more results
 	c.recently_launched_projects
 	=> [ _array of projects_ ]
-	c.load_more_projects if c.can_load_more_projects
+	c.load_more_projects if c.more_projects_available?
 	=> [ _array of additional projects_ ]
 
 	# Print all the updates for all the current user's projects

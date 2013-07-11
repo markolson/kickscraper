@@ -81,7 +81,7 @@ describe Kickscraper::Client do
   context "loads more projects after a successful search" do
     subject do 
       client.recently_launched_projects
-      client.can_load_more_projects.should be_true
+      client.more_projects_available?.should be_true
       client.load_more_projects 
     end
 
@@ -90,7 +90,7 @@ describe Kickscraper::Client do
   
   context "doesn't load more projects after an unsuccessful search" do
     before { client.search_projects "asfakjssdklfjsafajdfklafjdsl" }
-    its(:can_load_more_projects) { should be_false }
+    its(:more_projects_available?) { should be_false }
   end
 
   context "loads recently launched projects starting at a specific timestamp" do
