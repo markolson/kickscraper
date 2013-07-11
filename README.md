@@ -109,6 +109,24 @@ Provided with your user credentials this will list the first 20 or so projects y
     	puts "\n\n"
     }
 
+    client.categories
+    => [<Category: 'Art'>, <Category: 'Conceptual Art'>, <Category: 'Crafts'>, <Category: 'Animation'>, <Category: 'Tabletop Games'>, <Category: 'Classical Music'>, <Category: 'Art Book'>, <Category: 'Hardware'>, <Category: 'Comics'>, <Category: 'Digital Art'>, <Category: 'Graphic Design'>, <Category: 'Documentary'>, <Category: 'Video Games'>, <Category: 'Country & Folk'>, <Category: 'Children's Book'>, <Category: 'Open Software'>, <Category: 'Dance'>, <Category: 'Illustration'>, <Category: 'Product Design'>, <Category: 'Narrative Film'>, <Category: 'Electronic Music'>, <Category: 'Fiction'>, <Category: 'Design'>, <Category: 'Journalism'>, <Category: 'Painting'>, <Category: 'Short Film'>, <Category: 'Hip-Hop'>, <Category: 'Fashion'>, <Category: 'Performance Art'>, <Category: 'Webseries'>, <Category: 'Indie Rock'>, <Category: 'Nonfiction'>, <Category: 'Film & Video'>, <Category: 'Jazz'>, <Category: 'Periodical'>, <Category: 'Food'>, <Category: 'Pop'>, <Category: 'Poetry'>, <Category: 'Mixed Media'>, <Category: 'Games'>, <Category: 'Rock'>, <Category: 'Public Art'>, <Category: 'Radio & Podcast'>, <Category: 'Music'>, <Category: 'Sculpture'>, <Category: 'World Music'>, <Category: 'Photography'>, <Category: 'Publishing'>, <Category: 'Technology'>, <Category: 'Theater'>] 
+
+
+    category = client.category('product design')
+    => <Category: 'Product Design'> 
+
+    category.keys
+    => ["id", "name", "position", "parent_id", "parent", "projects_count", "urls"] 
+
+    category.projects_count
+    => 234 
+
+    ps = category.projects
+    => [<Project: 'The Skinny Mirror - The Mirror That Compliments You'>, <Project: 'Rustic Fort'>, <Project: 'pushXpro: Revolutionizing the push-up exercise'>, <Project: 'Introducing Nubrella, the world's first hands-free umbrella.'>, <Project: 'Stream: The Pebble Smartwatch Dock'>, <Project: 'Get iPatched - Protect Yourself From Big Brother & Hackers'>, <Project: 'TrueRec introduces the DFP Kayak - Dive Fish Paddle'>, <Project: 'MagCozy: A Leash for Your MagSafe 2 Adapter'>, <Project: 'ECO Friendly Bamboo Party Trays'>, <Project: 'PJ reefs Miniature Saltwater Aquarium'>] 
+
+
+
 ## Contributing
 
 There are two good ways to contribute: 
