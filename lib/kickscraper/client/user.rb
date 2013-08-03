@@ -18,12 +18,12 @@ module Kickscraper
 
         def backed_projects
         	return [] unless self.urls.api.backed_projects
-            @backed_projects ||= Kickscraper.client.process_api_url("Projects", Kickscraper.client.process_raw_api_url(self.urls.api.backed_projects))
+            @backed_projects ||= Kickscraper.client.process_api_url("Projects", self.urls.api.backed_projects)
         end
 
         def starred_projects
         	return [] unless self.urls.api.starred_projects
-            @starred_projects ||= Kickscraper.client.process_api_url("Projects", Kickscraper.client.process_raw_api_url(self.urls.api.starred_projects))
+            @starred_projects ||= Kickscraper.client.process_api_url("Projects", self.urls.api.starred_projects)
         end
     end
 end
