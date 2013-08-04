@@ -1,3 +1,11 @@
+### 0.1.1
+* enhancements
+  * Adding a created_projects method to user
+
+* bug fixes
+  * Fixing the backed_projects and starred_projects methods for user
+  * Fixes an error when searching for projects with spaces in the name
+
 ### 0.1.0
 
 * enhancements
