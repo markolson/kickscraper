@@ -115,7 +115,7 @@ module Kickscraper
             
             # if we got an error response back, stop here and return an empty response
             return empty_response if response.headers['status'].to_i >= 400 || !response.headers['content-type'].start_with?('application/json')
-            return empty_response if !body.error_messages.nil? || body.http_code == 404
+            return empty_response if (body.respond_to?("error_messages") && !body.error_messages.empty?) || (body.respond_to?("http_code") && body.http_code == 404)
             
             
             # otherwise, take the response from the api and coerce it to the type we want
@@ -130,8 +130,15 @@ module Kickscraper
                 
             when "projects"
                 
-                # if the body doesn't have any projects, return an empty array
-                if body.projects.nil?
+                # if the body is just an array of projects, with no root keys, then coerce
+                # the array
+                if body.is_a?(Array)
+                    
+                    body.map { |project| Project.coerce project }
+                    
+                    
+                # else, if the body doesn't have any projects, return an empty array
+                elsif body.projects.nil?
                     
                     @more_projects_url = nil
                     return empty_response
@@ -156,10 +163,12 @@ module Kickscraper
                 body.updates.map { |update| Update.coerce update }
                 
             when "categories"
+                
                 return empty_response if body.categories.nil?
                 body.categories.map { |category| Category.coerce category }
             
             when "category"
+                
                 Category.coerce body
 
             else    

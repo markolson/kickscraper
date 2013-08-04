@@ -25,5 +25,10 @@ module Kickscraper
         	return [] unless self.urls.api.starred_projects
             @starred_projects ||= Kickscraper.client.process_api_url("Projects", self.urls.api.starred_projects)
         end
+        
+        def created_projects
+            return [] unless self.urls.api.created_projects
+            @created_projects ||= Kickscraper.client.process_api_url("Projects", self.urls.api.created_projects)
+        end
     end
 end
