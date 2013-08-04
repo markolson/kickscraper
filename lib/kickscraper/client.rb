@@ -26,8 +26,8 @@ module Kickscraper
             self::process_api_call "project", id_or_slug.to_s
         end
 
-        def search_projects(q, page = nil)
-            self::process_api_call "projects", "search", "q=" + URI.escape(q), page
+        def search_projects(query, page = nil)
+            self::process_api_call "projects", "search", query, page
         end
 
         def ending_soon_projects(deadline_timestamp = nil)
@@ -68,14 +68,14 @@ module Kickscraper
         end
 
 
-        def process_api_call(request_for, additional_path, query_string = "", cursor = nil)
+        def process_api_call(request_for, additional_path, query = "", cursor = nil)
             
             # create the path to the API resource we want
-            api_path = self::create_api_path(request_for, additional_path, query_string, cursor)
+            url_and_params = self::create_api_path(request_for, additional_path, query, cursor)
             
             
             # make the api call
-            response = connection.get(api_path)
+            response = connection.get(url_and_params[:url], url_and_params[:params])
             
             
             # handle the response, returning an object with the results
@@ -168,39 +168,36 @@ module Kickscraper
         end
         
         
-        def create_api_path(request_for, additional_path, query_string = "", cursor = nil)
+        def create_api_path(request_for, additional_path = "", query_string = "", cursor = nil)
             
             # start with the base path
             base_path = "/v1"
-            full_uri = base_path
+            url = base_path
             
             
             # set a specific sub path for users and projects
             case request_for.downcase
             when "user"
-                full_uri += "/users"
+                url += "/users"
             when "project", "projects"
-                full_uri += "/projects"
+                url += "/projects"
             when "category", "categories"
-                full_uri += "/categories"
+                url += "/categories"
             end
             
             
             # add the additional path if we have it
-            full_uri += "/" + URI.escape(additional_path) unless additional_path.empty?
+            url += "/" + CGI.escape(additional_path) unless additional_path.empty?
             
             
-            # add the cursor to the query string if we have it
-            cursor = cursor.to_i
-            if cursor > 0 then query_string = query_string.empty? ? "cursor=#{cursor}" : "#{query_string}&cursor=#{cursor}" end
+            # create the params hash and add the params we want
+            params = {}
+            params[:q] = query_string unless query_string.empty?
+            params[:cursor] = cursor unless cursor.nil?
             
             
-            # add the query string if we have it
-            full_uri += "?" + query_string unless query_string.empty?
-            
-            
-            # return the final uri
-            full_uri
+            # return the url and params
+            {url: url, params: params}
         end
     end
 end

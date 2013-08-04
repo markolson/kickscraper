@@ -47,7 +47,7 @@ describe Kickscraper::Client do
   end
   
   it "handles searching for projects with special characters" do
-    projects = client.search_projects %q{angels & demons with special "characters" and punctuation's n^ight%mare}
+    projects = client.search_projects %q{"angels" & demons !@#$'%^&*()}
     projects.length.should be > 0
   end
   
