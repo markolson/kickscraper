@@ -128,4 +128,25 @@ describe Kickscraper::Client do
     its(:name) { should eq TEST_CATEGORY_NAME }
   end
 
+  context "returns an array of updates when a valid project is loaded" do
+    subject { client.find_project(TEST_PROJECT_ID).updates }
+    it_returns "a collection", Kickscraper::Update
+  end
+
+  context "loads more updates when available" do
+    before { client.find_project(TEST_PROJECT_ID) }
+    subject do
+      client.more_updates_available?.should be_true
+      client.load_more_updates
+    end
+
+    it_returns "a collection", Kickscraper::Update
+  end
+
+  it "throws an error when accessing updates without a valid project loaded" do
+    subject { client.find_project TEST_PROJECT_ID }
+    expect { subject.to be_nil }
+    expect { subject.updates }.to raise_error
+  end
+
 end

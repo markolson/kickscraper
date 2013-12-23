@@ -16,3 +16,4 @@ TEST_PROJECT_SLUG = 'wish-i-was-here-1'
 TEST_PROJECT_NAME = "WISH I WAS HERE"
 TEST_CATEGORY_NAME = 'Design'
 TEST_CATEGORY_ID = 7
+TEST_PUBLIC_UPDATE_URL = 'https://api.kickstarter.com/v1/projects/1871494789/updates/462776'

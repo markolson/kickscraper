@@ -170,6 +170,10 @@ module Kickscraper
                 
                 return empty_response if body.comments.nil?
                 body.comments.map { |comment| Comment.coerce comment }
+
+            when "update"
+
+                Update.coerce body
                 
             when "updates"
                 
