@@ -26,37 +26,37 @@ module Kickscraper
             self::process_api_call "project", id_or_slug.to_s
         end
 
-        def search_projects(query, page = nil)
-            self::process_api_call "projects", "search", query, page
+        def search_projects(search_terms, page = nil)
+            self::process_api_call "projects", "advanced", search_terms, page
         end
 
-        def ending_soon_projects(deadline_timestamp = nil)
-            self::process_api_call "projects", "ending_soon", "", deadline_timestamp
+        def ending_soon_projects(page = nil)
+            self::process_api_call "projects", "ending-soon", "", page
         end
 
         def popular_projects(page = nil)
             self::process_api_call "projects", "popular", "", page
         end
 
-        def recently_launched_projects(starting_at_timestamp = nil)
-            self::process_api_call "projects", "recently_launched", "", starting_at_timestamp
+        def recently_launched_projects(page = nil)
+            self::process_api_call "projects", "recently-launched", "", page
         end
 
         alias_method :newest_projects, :recently_launched_projects
         
-        def more_projects_available?
-            !@more_projects_url.nil?
-        end
+        # def more_projects_available?
+        #     !@more_projects_url.nil?
+        # end
         
-        alias_method :can_load_more_projects, :more_projects_available?
+        # alias_method :can_load_more_projects, :more_projects_available?
 
-        def load_more_projects
-            if self::more_projects_available?
-                self::process_api_url "projects", @more_projects_url
-            else
-                []
-            end
-        end
+        # def load_more_projects
+        #     if self::more_projects_available?
+        #         self::process_api_url "projects", @more_projects_url
+        #     else
+        #         []
+        #     end
+        # end
 
         def categories
             self::process_api_call "categories", ""
@@ -68,15 +68,10 @@ module Kickscraper
         end
 
 
-        def process_api_call(request_for, additional_path, query = "", cursor = nil)
+        def process_api_call(request_for, additional_path, search_terms = "", page = nil)
             
-            # create the path to the API resource we want
-            url_and_params = self::create_api_path(request_for, additional_path, query, cursor)
-            
-            
-            # make the api call
-            response = connection.get(url_and_params[:url], url_and_params[:params])
-            
+            # make the api call (to the API resource we want)
+            response = self::make_api_call(request_for, additional_path, search_terms, page)
             
             # handle the response, returning an object with the results
             self::coerce_api_response(request_for, response)
@@ -140,7 +135,7 @@ module Kickscraper
                 # else, if the body doesn't have any projects, return an empty array
                 elsif body.projects.nil?
                     
-                    @more_projects_url = nil
+                    # @more_projects_url = nil
                     return empty_response
                     
                     
@@ -148,7 +143,7 @@ module Kickscraper
                 # exists) and then return an array of projects
                 else
                     
-                    @more_projects_url = (!body.urls.nil? && !body.urls.api.nil? && !body.urls.api.more_projects.nil? && !body.urls.api.more_projects.empty?) ? body.urls.api.more_projects : nil
+                    # @more_projects_url = (!body.urls.nil? && !body.urls.api.nil? && !body.urls.api.more_projects.nil? && !body.urls.api.more_projects.empty?) ? body.urls.api.more_projects : nil
                     return body.projects.map { |project| Project.coerce project }
                 end
                 
@@ -177,36 +172,37 @@ module Kickscraper
         end
         
         
-        def create_api_path(request_for, additional_path = "", query_string = "", cursor = nil)
+        def make_api_call(request_for, additional_path = "", search_terms = "", page = nil)
             
-            # start with the base path
-            base_path = "/v1"
-            url = base_path
-            
-            
-            # set a specific sub path for users and projects
+            # set the url/path differently for each type of request
             case request_for.downcase
             when "user"
-                url += "/users"
-            when "project", "projects"
-                url += "/projects"
+                api_or_search = "api"
+                path = "/v1/users"
+            when "project"
+                api_or_search = "api"
+                path = "/v1/projects"
+            when "projects"
+                api_or_search = "search"
+                path = "/discover"
             when "category", "categories"
-                url += "/categories"
+                api_or_search = "api"
+                path = "/v1/categories"
             end
             
             
             # add the additional path if we have it
-            url += "/" + CGI.escape(additional_path) unless additional_path.empty?
+            path += "/" + CGI.escape(additional_path) unless additional_path.empty?
             
             
             # create the params hash and add the params we want
             params = {}
-            params[:q] = query_string unless query_string.empty?
-            params[:cursor] = cursor unless cursor.nil?
+            params[:term] = search_terms unless search_terms.empty?
+            params[:page] = page unless page.nil?
             
             
-            # return the url and params
-            {url: url, params: params}
+            # make the connection and return the response
+            connection(api_or_search).get(path, params)
         end
     end
 end

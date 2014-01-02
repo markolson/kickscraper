@@ -78,35 +78,35 @@ describe Kickscraper::Client do
     it_returns "a collection", Kickscraper::Project
   end
   
-  context "loads more projects after a successful search" do
-    subject do 
-      client.recently_launched_projects
-      client.more_projects_available?.should be_true
-      client.load_more_projects 
-    end
+  # context "loads more projects after a successful search" do
+  #   subject do 
+  #     client.recently_launched_projects
+  #     client.more_projects_available?.should be_true
+  #     client.load_more_projects 
+  #   end
 
-    it_returns "a collection", Kickscraper::Project
-  end
+  #   it_returns "a collection", Kickscraper::Project
+  # end
   
-  context "doesn't load more projects after an unsuccessful search" do
-    before { client.search_projects "asfakjssdklfjsafajdfklafjdsl" }
-    its(:more_projects_available?) { should be_false }
-  end
+  # context "doesn't load more projects after an unsuccessful search" do
+  #   before { client.search_projects "asfakjssdklfjsafajdfklafjdsl" }
+  #   its(:more_projects_available?) { should be_false }
+  # end
 
-  context "loads recently launched projects starting at a specific timestamp" do
-    subject { client.recently_launched_projects((Time.now - (2 * 24 * 60 * 60)).to_i) }
-    it_returns "a collection", Kickscraper::Project
-  end
+  # context "loads recently launched projects starting at a specific timestamp" do
+  #   subject { client.recently_launched_projects((Time.now - (2 * 24 * 60 * 60)).to_i) }
+  #   it_returns "a collection", Kickscraper::Project
+  # end
   
-  context "loads popular projects starting at a specific set" do
+  context "loads popular projects starting at a specific page" do
     subject { client.popular_projects(30) }
     it_returns "a collection", Kickscraper::Project
   end
   
-  context "loads projects ending soon starting at a specific deadline" do
-    subject { client.ending_soon_projects((Time.now + (2 * 24 * 60 * 60)).to_i) }
-    it_returns "a collection", Kickscraper::Project
-  end
+  # context "loads projects ending soon starting at a specific deadline" do
+  #   subject { client.ending_soon_projects((Time.now + (2 * 24 * 60 * 60)).to_i) }
+  #   it_returns "a collection", Kickscraper::Project
+  # end
   
   context "searches for projects starting at a specific page of results" do
     subject { client.search_projects('arduino', 2) }
