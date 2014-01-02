@@ -154,7 +154,7 @@ module Kickscraper
                 else
                     
                     if @last_api_call_params && !body.total_hits.nil?
-                        @more_projects_available = @last_api_call_params[:page] * 20 < body.total_hits
+                        @more_projects_available = @last_api_call_params[:page] * 20 < body.total_hits # (there is a huge assumption here that Kickstarter will always return 20 projects per page!)
                     end
                     
                     return body.projects.map { |project| Project.coerce project }
