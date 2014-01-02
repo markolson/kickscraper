@@ -78,20 +78,20 @@ describe Kickscraper::Client do
     it_returns "a collection", Kickscraper::Project
   end
   
-  # context "loads more projects after a successful search" do
-  #   subject do 
-  #     client.recently_launched_projects
-  #     client.more_projects_available?.should be_true
-  #     client.load_more_projects 
-  #   end
+  context "loads more projects after a successful search" do
+    subject do 
+      client.recently_launched_projects
+      client.more_projects_available?.should be_true
+      client.load_more_projects 
+    end
 
-  #   it_returns "a collection", Kickscraper::Project
-  # end
+    it_returns "a collection", Kickscraper::Project
+  end
   
-  # context "doesn't load more projects after an unsuccessful search" do
-  #   before { client.search_projects "asfakjssdklfjsafajdfklafjdsl" }
-  #   its(:more_projects_available?) { should be_false }
-  # end
+  context "doesn't load more projects after an unsuccessful search" do
+    before { client.search_projects "asfakjssdklfjsafajdfklafjdsl" }
+    its(:more_projects_available?) { should be_false }
+  end
 
   # context "loads recently launched projects starting at a specific timestamp" do
   #   subject { client.recently_launched_projects((Time.now - (2 * 24 * 60 * 60)).to_i) }

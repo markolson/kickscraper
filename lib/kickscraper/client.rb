@@ -7,6 +7,8 @@ module Kickscraper
         attr_accessor :user
         
         def initialize
+            @more_projects_available = false
+            
             if Kickscraper.token.nil?
                 token_response = connection.post('xauth/access_token?client_id=2II5GGBZLOOZAA5XBU1U0Y44BU57Q58L8KOGM7H0E0YFHP3KTG', {'email' => Kickscraper.email, 'password' => Kickscraper.password }.to_json)
                 if token_response.body.error_messages
@@ -44,19 +46,19 @@ module Kickscraper
 
         alias_method :newest_projects, :recently_launched_projects
         
-        # def more_projects_available?
-        #     !@more_projects_url.nil?
-        # end
+        def more_projects_available?
+            @more_projects_available
+        end
         
-        # alias_method :can_load_more_projects, :more_projects_available?
+        alias_method :can_load_more_projects, :more_projects_available?
 
-        # def load_more_projects
-        #     if self::more_projects_available?
-        #         self::process_api_url "projects", @more_projects_url
-        #     else
-        #         []
-        #     end
-        # end
+        def load_more_projects
+            if self::more_projects_available?
+                self::process_api_call @last_api_call_params[:request_for], @last_api_call_params[:additional_path], @last_api_call_params[:search_terms], (@last_api_call_params[:page] + 1)
+            else
+                []
+            end
+        end
 
         def categories
             self::process_api_call "categories", ""
@@ -69,6 +71,14 @@ module Kickscraper
 
 
         def process_api_call(request_for, additional_path, search_terms = "", page = nil)
+            
+            # save the parameters for this call, so we can repeat it to get the next page of results
+            @last_api_call_params = {
+                request_for: request_for, 
+                additional_path: additional_path, 
+                search_terms: search_terms,
+                page: page.nil? ? 1 : page
+            }
             
             # make the api call (to the API resource we want)
             response = self::make_api_call(request_for, additional_path, search_terms, page)
@@ -129,21 +139,24 @@ module Kickscraper
                 # the array
                 if body.is_a?(Array)
                     
+                    @more_projects_available = false
                     body.map { |project| Project.coerce project }
                     
                     
                 # else, if the body doesn't have any projects, return an empty array
                 elsif body.projects.nil?
                     
-                    # @more_projects_url = nil
+                    @more_projects_available = false
                     return empty_response
                     
                     
-                # else, set the url for where we can load the next batch of projects (if it
-                # exists) and then return an array of projects
+                # else, determine if we can load more projects and then return an array of projects
                 else
                     
-                    # @more_projects_url = (!body.urls.nil? && !body.urls.api.nil? && !body.urls.api.more_projects.nil? && !body.urls.api.more_projects.empty?) ? body.urls.api.more_projects : nil
+                    if @last_api_call_params && !body.total_hits.nil?
+                        @more_projects_available = @last_api_call_params[:page] * 20 < body.total_hits
+                    end
+                    
                     return body.projects.map { |project| Project.coerce project }
                 end
                 
