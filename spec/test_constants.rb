@@ -1,7 +1,7 @@
 # configure kickscraper before the tests
 # (put your real kickstarter API credentials here)
-KICKSCRAPER_TEST_API_EMAIL = nil # 'your_kickstarter_email'
-KICKSCRAPER_TEST_API_PASSWORD = nil # 'your_kickstarter_password'
+KICKSCRAPER_TEST_API_EMAIL = 'your_kickstarter_email'
+KICKSCRAPER_TEST_API_PASSWORD = 'your_kickstarter_password'
 
 
 # if you want to use a proxy (like Charles, etc) to capture
