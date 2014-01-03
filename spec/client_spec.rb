@@ -39,28 +39,26 @@ describe Kickscraper::Client do
     end
   end
   
-  pending("determing if .search_projects can be done purely with Public API") do
-    context "searches projects with a keyword" do
-      subject { client.search_projects 'arduino' }
-      it_returns "a collection", Kickscraper::Project
-    end
+  context "searches projects with a keyword" do
+    subject { client.search_projects 'arduino' }
+    it_returns "a collection", Kickscraper::Project
+  end
     
-    it "searches projects for a specific one" do
-      projects = client.search_projects 'Spark Core Wi-Fi for Everything'
-      projects.length.should be > 0
-      projects[0].id.should be 373368980
-    end
+  it "searches projects for a specific one" do
+    projects = client.search_projects 'Spark Core Wi-Fi for Everything'
+    projects.length.should be > 0
+    projects[0].id.should be 373368980
+  end
     
-    it "handles searching for projects with special characters" do
-      projects = client.search_projects %q{"angels" & demons !@#$'%^&*()}
-      projects.length.should be > 0
-    end
+  it "handles searching for projects with special characters" do
+    projects = client.search_projects %q{"angels" & demons !@#$'%^&*()}
+    projects.length.should be > 0
+  end
     
-    it "returns an empty array when searching for projects and finding nothing" do
-      projects = client.search_projects "asfakjssdklfjsafajdfklafjdsl"
-      projects.should be_an(Array)
-      projects.should be_empty
-    end
+  it "returns an empty array when searching for projects and finding nothing" do
+    projects = client.search_projects "asfakjssdklfjsafajdfklafjdsl"
+    projects.should be_an(Array)
+    projects.should be_empty
   end
     
   context "finds projects ending soon" do
@@ -94,11 +92,9 @@ describe Kickscraper::Client do
     it_returns "a collection", Kickscraper::Project
   end
   
-  pending("determing if .search_projects can be done purely with Public API") do
-    context "doesn't load more projects after an unsuccessful search" do
-      before { client.search_projects "asfakjssdklfjsafajdfklafjdsl" }
-      its(:more_projects_available?) { should be_false }
-    end
+  context "doesn't load more projects after an unsuccessful search" do
+    before { client.search_projects "asfakjssdklfjsafajdfklafjdsl" }
+    its(:more_projects_available?) { should be_false }
   end
 
   # context "loads recently launched projects starting at a specific timestamp" do
@@ -116,11 +112,9 @@ describe Kickscraper::Client do
   #   it_returns "a collection", Kickscraper::Project
   # end
   
-  pending("determing if .search_projects can be done purely with Public API") do
-    context "searches for projects starting at a specific page of results" do
-      subject { client.search_projects('arduino', 2) }
-      it_returns "a collection", Kickscraper::Project
-    end
+  context "searches for projects starting at a specific page of results" do
+    subject { client.search_projects('arduino', 2) }
+    it_returns "a collection", Kickscraper::Project
   end
 
   pending("determing if .categories can be done purely with Public API") do
