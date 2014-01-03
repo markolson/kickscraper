@@ -1,62 +1,68 @@
 describe Kickscraper::Client do
   let(:client) { Kickscraper.client }
   
-  context "finds a user by id" do
-    subject(:user) { client.find_user TEST_USER_ID }
+  pending("determing if .find_user can be done purely with Public API") do
+    context "finds a user by id" do
+        subject(:user) { client.find_user TEST_USER_ID }
+      
+        its(:id) { should == TEST_USER_ID }
+        its(:name) { should == 'Zach Braff' }
+    end
     
-    its(:id) { should == TEST_USER_ID }
-    its(:name) { should == 'Zach Braff' }
-  end
+    context "returns nil when finding a non-existent user" do
+      subject { client.find_user 9999 }
   
-  context "returns nil when finding a non-existent user" do
-    subject { client.find_user 9999 }
+      it { should be_nil }
+    end
+  end 
 
-    it { should be_nil }
-  end
-  
-  context "finds a project by id" do
-    subject(:project) { client.find_project TEST_PROJECT_ID }
+  pending("determing if .find_project can be done purely with Public API") do
+    context "finds a project by id" do
+      subject(:project) { client.find_project TEST_PROJECT_ID }
+      
+      its(:id) { should == TEST_PROJECT_ID }
+      its(:slug) { should == TEST_PROJECT_SLUG }
+      its(:name) { should == TEST_PROJECT_NAME }
+    end
     
-    its(:id) { should == TEST_PROJECT_ID }
-    its(:slug) { should == TEST_PROJECT_SLUG }
-    its(:name) { should == TEST_PROJECT_NAME }
-  end
-  
-  context "finds a project by slug" do
-    subject(:project) { client.find_project TEST_PROJECT_SLUG }
+    context "finds a project by slug" do
+      subject(:project) { client.find_project TEST_PROJECT_SLUG }
+      
+      its(:id) { should == TEST_PROJECT_ID }
+      its(:slug) { should == TEST_PROJECT_SLUG }
+      its(:name) { should == TEST_PROJECT_NAME }
+    end
     
-    its(:id) { should == TEST_PROJECT_ID }
-    its(:slug) { should == TEST_PROJECT_SLUG }
-    its(:name) { should == TEST_PROJECT_NAME }
+    context "returns nil when finding a non-existent project" do
+      subject { client.find_project 9999 }
+      it { should be_nil }
+    end
   end
   
-  context "returns nil when finding a non-existent project" do
-    subject { client.find_project 9999 }
-    it { should be_nil }
+  pending("determing if .search_projects can be done purely with Public API") do
+    context "searches projects with a keyword" do
+      subject { client.search_projects 'arduino' }
+      it_returns "a collection", Kickscraper::Project
+    end
+    
+    it "searches projects for a specific one" do
+      projects = client.search_projects 'Spark Core Wi-Fi for Everything'
+      projects.length.should be > 0
+      projects[0].id.should be 373368980
+    end
+    
+    it "handles searching for projects with special characters" do
+      projects = client.search_projects %q{"angels" & demons !@#$'%^&*()}
+      projects.length.should be > 0
+    end
+    
+    it "returns an empty array when searching for projects and finding nothing" do
+      projects = client.search_projects "asfakjssdklfjsafajdfklafjdsl"
+      projects.should be_an(Array)
+      projects.should be_empty
+    end
   end
-  
-  context "searches projects with a keyword" do
-    subject { client.search_projects 'arduino' }
-    it_returns "a collection", Kickscraper::Project
-  end
-  
-  it "searches projects for a specific one" do
-    projects = client.search_projects 'Spark Core Wi-Fi for Everything'
-    projects.length.should be > 0
-    projects[0].id.should be 373368980
-  end
-  
-  it "handles searching for projects with special characters" do
-    projects = client.search_projects %q{"angels" & demons !@#$'%^&*()}
-    projects.length.should be > 0
-  end
-  
-  it "returns an empty array when searching for projects and finding nothing" do
-    projects = client.search_projects "asfakjssdklfjsafajdfklafjdsl"
-    projects.should be_an(Array)
-    projects.should be_empty
-  end
-  
+    
   context "finds projects ending soon" do
     subject { client.ending_soon_projects }
 
@@ -88,9 +94,11 @@ describe Kickscraper::Client do
     it_returns "a collection", Kickscraper::Project
   end
   
-  context "doesn't load more projects after an unsuccessful search" do
-    before { client.search_projects "asfakjssdklfjsafajdfklafjdsl" }
-    its(:more_projects_available?) { should be_false }
+  pending("determing if .search_projects can be done purely with Public API") do
+    context "doesn't load more projects after an unsuccessful search" do
+      before { client.search_projects "asfakjssdklfjsafajdfklafjdsl" }
+      its(:more_projects_available?) { should be_false }
+    end
   end
 
   # context "loads recently launched projects starting at a specific timestamp" do
@@ -108,24 +116,30 @@ describe Kickscraper::Client do
   #   it_returns "a collection", Kickscraper::Project
   # end
   
-  context "searches for projects starting at a specific page of results" do
-    subject { client.search_projects('arduino', 2) }
-    it_returns "a collection", Kickscraper::Project
+  pending("determing if .search_projects can be done purely with Public API") do
+    context "searches for projects starting at a specific page of results" do
+      subject { client.search_projects('arduino', 2) }
+      it_returns "a collection", Kickscraper::Project
+    end
   end
 
-  context "lists all categories" do
-    subject { client.categories }  
-    it_returns "a collection", Kickscraper::Category
+  pending("determing if .categories can be done purely with Public API") do
+    context "lists all categories" do
+      subject { client.categories }  
+      it_returns "a collection", Kickscraper::Category
+    end
   end
 
-  context "loads a category from string" do
-    subject { client.category(TEST_CATEGORY_NAME) }
-    its(:name) { should eq TEST_CATEGORY_NAME }
-  end
+  pending("determing if .category can be done purely with Public API") do
+    context "loads a category from string" do
+      subject { client.category(TEST_CATEGORY_NAME) }
+      its(:name) { should eq TEST_CATEGORY_NAME }
+    end
 
-  context "loads a category from an id" do
-    subject { client.category(TEST_CATEGORY_ID) }
-    its(:name) { should eq TEST_CATEGORY_NAME }
+    context "loads a category from an id" do
+      subject { client.category(TEST_CATEGORY_ID) }
+      its(:name) { should eq TEST_CATEGORY_NAME }
+    end
   end
 
 end

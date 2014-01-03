@@ -8,15 +8,19 @@ module Kickscraper
         
         def initialize
             @more_projects_available = false
-            
-            if Kickscraper.token.nil?
-                token_response = connection.post('xauth/access_token?client_id=2II5GGBZLOOZAA5XBU1U0Y44BU57Q58L8KOGM7H0E0YFHP3KTG', {'email' => Kickscraper.email, 'password' => Kickscraper.password }.to_json)
-                if token_response.body.error_messages
-                    raise token_response.body.error_messages.join("\n")
-                    return
+
+            if Kickscraper.email.nil?
+                @user = nil
+            else
+                if Kickscraper.token.nil?
+                    token_response = connection.post('xauth/access_token?client_id=2II5GGBZLOOZAA5XBU1U0Y44BU57Q58L8KOGM7H0E0YFHP3KTG', {'email' => Kickscraper.email, 'password' => Kickscraper.password }.to_json)
+                    if token_response.body.error_messages
+                        raise token_response.body.error_messages.join("\n")
+                        return
+                    end
+                    Kickscraper.token = token_response.body.access_token
+                    @user = User.coerce(token_response.body.user)
                 end
-                Kickscraper.token = token_response.body.access_token
-                @user = User.coerce(token_response.body.user)
             end
         end
 
