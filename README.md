@@ -4,6 +4,16 @@ Kickscraper is a library for interfacing with Kickstarter's undocumented/unannou
 
 I've begun to document all the types of data available on the <a href="https://github.com/markolson/kickscraper/wiki/Datatypes">Wiki for this project.</a> 
 
+
+## Status Update
+
+As of early January 2013, Kickstarter has changed some parts of their API. We are working around these changes, but we have temporarily pulled down the kickscraper ruby gem.
+
+If you are using kickscraper in a current project, you should change your gem source to use this github repo (see below).
+
+Please see the other branches, and the issues page for more info and for current workarounds.
+
+
 ## Installation
 
     $ gem install kickscraper
