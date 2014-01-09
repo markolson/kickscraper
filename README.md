@@ -14,26 +14,10 @@ This is in response to Kickstarter's API change in early January 2013. For more 
 
 ## Installation
 
-    $ gem install kickscraper
+To use this specific branch, add this to your gemfile:
 
-Or for use in another app, add it to your Gemfile
+    gem 'kickscraper', :git => 'git://github.com/markolson/kickscraper.git', :branch => 'partially-using-public-search'
 
-   	# stay crazy up to date'
-    gem 'kickscraper', :git => 'git://github.com/markolson/kickscraper.git' 
-    # or use prebuilt gems that are probably pretty stable
-    gem 'kickscraper'
-
-## Status
-
-After several hours of quick hacking and copy-pasting, Kickscraper is able to authenticate against the Kickstarter API, store the returned oauth token and user object, fetch the user's backed projects, and view updates for those projects. 
-
-Left to do:
-
- * Gettings/caching for different endpoints
- * Error handling
- * Pagination support
- * Refactor to use object.urls.api values to construct gettings dynamically?
- * Testing!
 
 ## Sample Usage
 
