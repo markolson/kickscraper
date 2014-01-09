@@ -1,4 +1,12 @@
+### 0.1.2
+
+* changes
+  * Using the public search instead of the authenticated API for project searches
+  * Allowing configuration with no email/pass (which now works for some features)
+  * NOTE: These changes were made in response to a change in Kickstarter's API, and there are currently some broken features
+
 ### 0.1.1
+
 * enhancements
   * Adding a created_projects method to user
 
