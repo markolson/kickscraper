@@ -69,9 +69,25 @@ shared_examples_for "search projects" do
     projects[0].id.should be 373368980
   end
 
-  it "handles searching for projects with special characters" do
-    projects = client.search_projects %q{"angels" & demons !@#$'%^&*()}
-    projects.length.should be > 0
+  describe "match search results seen in UI for projects with special characters" do 
+    # http://www.kickstarter.com/projects/search?utf8=✓&term=%22angels%22+%26+demons+%21%40%23%24%27%25%5E%26*%28%29
+    it "handles searching for projects with isolated special characters" do
+      projects = client.search_projects %q{"angels" & demons !@#$'%^&*()}
+      projects.length.should == 0
+    end
+
+    # http://www.kickstarter.com/projects/search?utf8=✓&term=%22angels%22+%26demons%21%40%23%24%27%25%5E%26*%28%29
+    it "handles searching for projects with embedded special characters" do
+      projects = client.search_projects %q{"angels" &demons!@#$'%^&*()}
+      projects.length.should be > 0
+    end
+
+    # http://www.kickstarter.com/projects/search?term=Æsir
+    it "handles searching for projects with embedded special characters" do
+      pending("resolution of ArgumentError: invalid byte sequence in US-ASCII in lib/kickscrapper/connection.rb")
+      projects = client.search_projects "Æsir"
+      projects.length.should be > 0
+    end
   end
 
   it "returns an empty array when searching for projects and finding nothing" do
