@@ -1,3 +1,10 @@
+### 0.1.3
+
+* changes
+  * Using the public url for categories instead of the api url
+  * Fixing project comments and updates so that they are now pulled in when a project didn't already have them
+  * Adding more tests to cover the new scenarios for pulling public info from Kickstarter without API credentials
+
 ### 0.1.2
 
 * changes
