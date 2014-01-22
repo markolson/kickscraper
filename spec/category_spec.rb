@@ -14,7 +14,7 @@ describe Kickscraper::Category do
     subject { category.urls }
 
     it { should_not be_empty }
-    its(:api) { should_not be_empty }
+    its(:web) { should_not be_empty }
   end
 
 

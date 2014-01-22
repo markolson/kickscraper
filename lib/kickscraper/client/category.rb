@@ -11,8 +11,8 @@ module Kickscraper
         end
 
         def projects
-            return [] unless @projects || self.urls.api.projects
-            @projects ||= Kickscraper.client.process_api_url("Projects", self.urls.api.projects)
+            return [] unless @projects || self.urls.web.discover
+            @projects ||= Kickscraper.client.process_api_url("Projects", self.urls.web.discover)
         end
     end
 end
