@@ -35,7 +35,7 @@ module Kickscraper
       options = {
         :headers => {'Accept' => "application/json; charset=utf-8", 'User-Agent' => "Kickscraper/XXX"},
         :ssl => {:verify => false},
-        :url => api_or_search == "api" ? "https://api.kickstarter.com" : "http://www.kickstarter.com",
+        :url => api_or_search == "api" ? "https://api.kickstarter.com" : "https://www.kickstarter.com",
         :proxy => Kickscraper.proxy.nil? ? "" : Kickscraper.proxy
       }
       
@@ -43,6 +43,7 @@ module Kickscraper
         @api_connection ||= Faraday::Connection.new(options) do |connection|
           connection.use Faraday::Request::UrlEncoded
           connection.use FaradayMiddleware::Mashify
+          connection.use FaradayMiddleware::FollowRedirects
           connection.use Faraday::Response::ParseJson
           connection.use ::KSToken
           connection.adapter(Faraday.default_adapter)
@@ -51,6 +52,7 @@ module Kickscraper
         @search_connection ||= Faraday::Connection.new(options) do |connection|
           connection.use Faraday::Request::UrlEncoded
           connection.use FaradayMiddleware::Mashify
+          connection.use FaradayMiddleware::FollowRedirects
           connection.use Faraday::Response::ParseJson
           connection.use ::KSToken
           connection.adapter(Faraday.default_adapter)
