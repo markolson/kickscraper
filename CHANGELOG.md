@@ -1,3 +1,8 @@
+### 0.1.4
+
+* changes
+  * Using ssl (https) for all public www.kickstarter.com searches
+
 ### 0.1.3
 
 * changes
