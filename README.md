@@ -19,6 +19,13 @@ To use this specific branch, add this to your gemfile:
     gem 'kickscraper', :git => 'git://github.com/markolson/kickscraper.git', :branch => 'partially-using-public-search'
 
 
+## Quick way to get started in the console
+	
+	1. Put your real Kickstarter user credentials in spec/test_constants.rb (or leave blank, which will still allow some kickscraper features)
+	2. Enter the console with "rake console"
+	3. Start using kickscraper with any of the examples below (starting with "c = Kickscraper.client")
+
+
 ## Sample Usage
 
 Provided with your user credentials this will list the first 20 or so projects you've backed, along with if the project is still active and if it has met it's funding goal.
