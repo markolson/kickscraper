@@ -7,7 +7,8 @@ CONTRIBUTORS
 * Mark Olson - github @markolson
 
 
-#### Additional effort contributed by:
+#### Contributions by:
 
 * Ben Rugg - github @benrugg
 * James Allen - github @jamlen
+* Mark Anderson - github @NolaMark

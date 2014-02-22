@@ -1,3 +1,8 @@
+### 0.2.0
+
+* Changing the minor version because we've rewritten several things to accommodate Kickstarter's change to public search
+  * This encapsulates the changes starting at v 0.1.2
+
 ### 0.1.4
 
 * changes
