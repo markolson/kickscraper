@@ -29,10 +29,18 @@ describe Kickscraper::Project do
     project.creator.should be_a Kickscraper::User
   end
   
-  it "loads all the extra info that must be called by a separate API call" do
+  it "loads comments that must be called by a separate API call" do
+    projects = client.popular_projects
+    project = projects[0]
+
     comments = project.comments
     comments.length.should be >= 0
     if comments.length > 0 then comments[0].should be_a Kickscraper::Comment end
+  end
+
+  it "loads updates that must be called by a separate API call" do
+    projects = client.popular_projects
+    project = projects[0]
     
     updates = project.updates
     updates.length.should be >= 0

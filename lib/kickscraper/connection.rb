@@ -14,8 +14,12 @@ class KSToken < Faraday::Middleware
       env[:url].query_params[key] = value.tr('+', ' ')
     }
     
-    # add the oauth_token to all requests once we have it
-    env[:url].query_params['oauth_token'] = Kickscraper.token unless Kickscraper.token.nil?
+    # add format=json to all public search requests, or add the oauth_token to all api requests once we have it
+    if env[:url].to_s.index('https://api.kickstarter.com').nil?
+      env[:url].query_params['format'] = 'json'
+    else
+      env[:url].query_params['oauth_token'] = Kickscraper.token unless Kickscraper.token.nil?
+    end
     
     # make the call
     @app.call(env)
@@ -27,21 +31,32 @@ module Kickscraper
 
     private
 
-    def connection
+    def connection(api_or_search = "api")
       options = {
         :headers => {'Accept' => "application/json; charset=utf-8", 'User-Agent' => "Kickscraper/XXX"},
         :ssl => {:verify => false},
-        :url => "https://api.kickstarter.com",
+        :url => api_or_search == "api" ? "https://api.kickstarter.com" : "https://www.kickstarter.com",
         :proxy => Kickscraper.proxy.nil? ? "" : Kickscraper.proxy
       }
-
-      @connection ||= Faraday::Connection.new(options) do |connection|
-        connection.use Faraday::Request::UrlEncoded
-        connection.use FaradayMiddleware::Mashify
-        #connection.use FaradayMiddleware::Caching, {}
-        connection.use Faraday::Response::ParseJson
-        connection.use ::KSToken
-        connection.adapter(Faraday.default_adapter)
+      
+      if api_or_search == "api"
+        @api_connection ||= Faraday::Connection.new(options) do |connection|
+          connection.use Faraday::Request::UrlEncoded
+          connection.use FaradayMiddleware::Mashify
+          connection.use FaradayMiddleware::FollowRedirects
+          connection.use Faraday::Response::ParseJson
+          connection.use ::KSToken
+          connection.adapter(Faraday.default_adapter)
+        end
+      else
+        @search_connection ||= Faraday::Connection.new(options) do |connection|
+          connection.use Faraday::Request::UrlEncoded
+          connection.use FaradayMiddleware::Mashify
+          connection.use FaradayMiddleware::FollowRedirects
+          connection.use Faraday::Response::ParseJson
+          connection.use ::KSToken
+          connection.adapter(Faraday.default_adapter)
+        end
       end
     end
   end

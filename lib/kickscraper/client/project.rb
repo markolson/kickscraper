@@ -17,7 +17,13 @@ module Kickscraper
         end
 
         def reload!
-            @raw = Kickscraper.client.process_api_url("Project", self.urls.api.project, false)
+            if self.urls.api.nil?
+              the_full_project = Kickscraper.client.find_project(self.id)
+              project_api_url = the_full_project.nil? ? nil : the_full_project.urls.api.project
+            else
+              project_api_url = self.urls.api.project
+            end
+            @raw = Kickscraper.client.process_api_url("Project", project_api_url, false) unless project_api_url.nil?
             Kickscraper::Project::do_coercion(self)
         end
 
@@ -30,13 +36,31 @@ module Kickscraper
         end
 
         def comments
-            return [] unless @comments || self.urls.api.comments
-            @comments ||= Kickscraper.client.process_api_url("Comments", self.urls.api.comments)
+            return @comments if @comments
+
+            # must reload to get urls.api, not returned in public discover search
+            reload! unless (self.urls.api && self.urls.api.comments)
+
+            # if logged in and can use private API, self.urls.api.updates should now be defined
+            if (self.urls.api && self.urls.api.updates)
+              @comments = Kickscraper.client.process_api_url("Comments", self.urls.api.comments)
+            else
+              @comments= []
+            end
         end
 
         def updates
-            reload! unless @updates || self.urls.api.updates
-            @updates ||= Kickscraper.client.process_api_url("Updates", self.urls.api.updates)
+            return @updates if @updates
+
+            # must reload to get urls.api, not returned in public discover search
+            reload! unless (self.urls.api && self.urls.api.updates)
+
+            # if logged in and can use private API, self.urls.api.updates should now be defined
+            if (self.urls.api && self.urls.api.updates)
+              @updates = Kickscraper.client.process_api_url("Updates", self.urls.api.updates)
+            else
+              @updates = []
+            end
         end
         
         def rewards

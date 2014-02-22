@@ -1,4 +1,29 @@
+### 0.2.0
+
+* Changing the minor version because we've rewritten several things to accommodate Kickstarter's change to public search
+  * This encapsulates the changes starting at v 0.1.2
+
+### 0.1.4
+
+* changes
+  * Using ssl (https) for all public www.kickstarter.com searches
+
+### 0.1.3
+
+* changes
+  * Using the public url for categories instead of the api url
+  * Fixing project comments and updates so that they are now pulled in when a project didn't already have them
+  * Adding more tests to cover the new scenarios for pulling public info from Kickstarter without API credentials
+
+### 0.1.2
+
+* changes
+  * Using the public search instead of the authenticated API for project searches
+  * Allowing configuration with no email/pass (which now works for some features)
+  * NOTE: These changes were made in response to a change in Kickstarter's API, and there are currently some broken features
+
 ### 0.1.1
+
 * enhancements
   * Adding a created_projects method to user
 

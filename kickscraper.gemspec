@@ -6,7 +6,7 @@ require 'kickscraper/version'
 Gem::Specification.new do |spec|
   spec.name          = "kickscraper"
   spec.version       = Kickscraper::VERSION
-  spec.authors       = ["Mark Olson", "Ben Rugg", "James Allen"]
+  spec.authors       = ["Mark Olson", "Ben Rugg", "James Allen", "Mark Anderson"]
   spec.email         = ["theothermarkolson@gmail.com"]
   spec.description   = %q{Interact with Kickstarter through their API}
   spec.summary       = %q{API library for Kickstarter}
