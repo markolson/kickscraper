@@ -10,9 +10,13 @@ module Kickscraper
             "<Category: '#{to_s}'>"
         end
 
-        def projects
+        def projects(page=nil)
             return [] unless @projects || self.urls.web.discover
-            @projects ||= Kickscraper.client.process_api_url("Projects", self.urls.web.discover)
+            api_url = self.urls.web.discover
+            if page.present?
+                api_url = "#{api_url}?page=#{page}"
+            end
+            @projects ||= Kickscraper.client.process_api_url("Projects", api_url)
         end
     end
 end
