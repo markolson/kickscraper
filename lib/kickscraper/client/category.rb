@@ -14,6 +14,7 @@ module Kickscraper
             return [] unless @projects || self.urls.web.discover
             api_url = self.urls.web.discover
             if page.present?
+                puts "added state=live"
                 api_url = "#{api_url}?page=#{page}&state=live"
             end
             @projects ||= Kickscraper.client.process_api_url("Projects", api_url)
