@@ -33,7 +33,7 @@ module Kickscraper
 
     def connection(api_or_search = "api")
       options = {
-        :headers => {'Accept' => "application/json; charset=utf-8", 'User-Agent' => "Kickscraper/XXX"},
+        :headers => {'Content-Type' => 'application/json', 'Accept' => "application/json; charset=utf-8", 'User-Agent' => "Kickscraper/XXX"},
         :ssl => {:verify => false},
         :url => api_or_search == "api" ? "https://api.kickstarter.com" : "https://www.kickstarter.com",
         :proxy => Kickscraper.proxy.nil? ? "" : Kickscraper.proxy
