@@ -81,7 +81,7 @@ module Kickscraper
                 request_for: request_for, 
                 additional_path: additional_path, 
                 search_terms: search_terms,
-                page: page.nil? ? 1 : page
+                page: page.nil? ? 1 : page,
                 category_id: category_id,
                 state: state
             }
