@@ -69,6 +69,22 @@ shared_examples_for "search projects" do
     projects[0].id.should be 373368980
   end
 
+  it "searches projects for a specific one with wrong category" do
+    projects = client.search_projects('Spark Core Wi-Fi for Everything', nil, 1)
+    projects.length.should be 0
+  end
+
+  it "searches projects for a specific one with wrong state" do
+    projects = client.search_projects('Spark Core Wi-Fi for Everything', nil, nil, 'live')
+    projects.length.should be 0
+  end
+
+    it "searches projects for a specific one with correct category and state" do
+    projects = client.search_projects('Spark Core Wi-Fi for Everything', nil, 16, 'successful')
+    projects.length.should be > 0
+    projects[0].id.should be 373368980
+  end
+
   describe "match search results seen in UI for projects with special characters" do 
     # https://www.kickstarter.com/projects/search?utf8=✓&term=%22angels%22+%26+demons+%21%40%23%24%27%25%5E%26*%28%29
     it "handles searching for projects with isolated special characters" do
