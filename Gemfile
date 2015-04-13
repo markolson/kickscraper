@@ -4,6 +4,6 @@ source 'https://rubygems.org'
 gemspec
 
 group :test, :development do
-  gem 'guard-rspec'
+  gem 'guard-rspec', '~> 4.2.5'
   gem 'terminal-notifier-guard'
 end
