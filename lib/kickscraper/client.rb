@@ -32,8 +32,8 @@ module Kickscraper
             self::process_api_call "project", id_or_slug.to_s
         end
 
-        def search_projects(search_terms, page = nil)
-            self::process_api_call "projects", "advanced", search_terms, page
+        def search_projects(search_terms, page = nil, category_id = nil, state = nil)
+            self::process_api_call "projects", "advanced", search_terms, page, category_id, state
         end
 
         def ending_soon_projects(page = nil)
@@ -58,7 +58,7 @@ module Kickscraper
 
         def load_more_projects
             if self::more_projects_available?
-                self::process_api_call @last_api_call_params[:request_for], @last_api_call_params[:additional_path], @last_api_call_params[:search_terms], (@last_api_call_params[:page] + 1)
+                self::process_api_call @last_api_call_params[:request_for], @last_api_call_params[:additional_path], @last_api_call_params[:search_terms], (@last_api_call_params[:page] + 1),  @last_api_call_params[:category_id],  @last_api_call_params[:state] 
             else
                 []
             end
@@ -74,18 +74,20 @@ module Kickscraper
         end
 
 
-        def process_api_call(request_for, additional_path, search_terms = "", page = nil)
+        def process_api_call(request_for, additional_path, search_terms = "", page = nil, category_id = nil, state = nil)
             
             # save the parameters for this call, so we can repeat it to get the next page of results
             @last_api_call_params = {
                 request_for: request_for, 
                 additional_path: additional_path, 
                 search_terms: search_terms,
-                page: page.nil? ? 1 : page
+                page: page.nil? ? 1 : page,
+                category_id: category_id,
+                state: state
             }
             
             # make the api call (to the API resource we want)
-            response = self::make_api_call(request_for, additional_path, search_terms, page)
+            response = self::make_api_call(request_for, additional_path, search_terms, page, category_id,state)
             
             # handle the response, returning an object with the results
             self::coerce_api_response(request_for, response)
@@ -189,7 +191,7 @@ module Kickscraper
         end
         
         
-        def make_api_call(request_for, additional_path = "", search_terms = "", page = nil)
+        def make_api_call(request_for, additional_path = "", search_terms = "", page = nil, category_id = nil, state = nil)
             
             # set the url/path differently for each type of request
             case request_for.downcase
@@ -216,7 +218,8 @@ module Kickscraper
             params = {}
             params[:term] = search_terms unless search_terms.empty?
             params[:page] = page unless page.nil?
-            
+            params[:category_id] = category_id unless category_id.nil? 
+            params[:state] = state unless state.nil?
             
             # make the connection and return the response
             connection(api_or_search).get(path, params)
