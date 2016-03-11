@@ -6,6 +6,8 @@ module Kickscraper
         
         attr_accessor :user
         
+        CLIENT_ID = '2II5GGBZLOOZAA5XBU1U0Y44BU57Q58L8KOGM7H0E0YFHP3KTG'
+
         def initialize
             @more_projects_available = false
 
@@ -13,7 +15,7 @@ module Kickscraper
                 @user = nil
             else
                 if Kickscraper.token.nil?
-                    token_response = connection.post('xauth/access_token?client_id=2II5GGBZLOOZAA5XBU1U0Y44BU57Q58L8KOGM7H0E0YFHP3KTG', {'email' => Kickscraper.email, 'password' => Kickscraper.password }.to_json)
+                    token_response = connection.post("xauth/access_token?client_id=#{CLIENT_ID}", {'email' => Kickscraper.email, 'password' => Kickscraper.password }.to_json)
                     if token_response.body.error_messages
                         raise token_response.body.error_messages.join("\n")
                         return
@@ -220,7 +222,8 @@ module Kickscraper
             params[:page] = page unless page.nil?
             params[:category_id] = category_id unless category_id.nil? 
             params[:state] = state unless state.nil?
-            
+            params[:client_id] = CLIENT_ID if api_or_search == "api"
+
             # make the connection and return the response
             connection(api_or_search).get(path, params)
         end
