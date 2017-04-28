@@ -115,10 +115,10 @@ Provided with your user credentials this will list the first 20 or so projects y
     }
     
     # Get info about Kickstarter categories or find projects by category
-    client.categories
+    c.categories
     => [<Category: 'Art'>, <Category: 'Conceptual Art'>, <Category: 'Crafts'>, <Category: 'Animation'>, <Category: 'Tabletop Games'>, <Category: 'Classical Music'>, <Category: 'Art Book'>, <Category: 'Hardware'>, <Category: 'Comics'>, <Category: 'Digital Art'>, <Category: 'Graphic Design'>, <Category: 'Documentary'>, <Category: 'Video Games'>, <Category: 'Country & Folk'>, <Category: 'Children's Book'>, <Category: 'Open Software'>, <Category: 'Dance'>, <Category: 'Illustration'>, <Category: 'Product Design'>, <Category: 'Narrative Film'>, <Category: 'Electronic Music'>, <Category: 'Fiction'>, <Category: 'Design'>, <Category: 'Journalism'>, <Category: 'Painting'>, <Category: 'Short Film'>, <Category: 'Hip-Hop'>, <Category: 'Fashion'>, <Category: 'Performance Art'>, <Category: 'Webseries'>, <Category: 'Indie Rock'>, <Category: 'Nonfiction'>, <Category: 'Film & Video'>, <Category: 'Jazz'>, <Category: 'Periodical'>, <Category: 'Food'>, <Category: 'Pop'>, <Category: 'Poetry'>, <Category: 'Mixed Media'>, <Category: 'Games'>, <Category: 'Rock'>, <Category: 'Public Art'>, <Category: 'Radio & Podcast'>, <Category: 'Music'>, <Category: 'Sculpture'>, <Category: 'World Music'>, <Category: 'Photography'>, <Category: 'Publishing'>, <Category: 'Technology'>, <Category: 'Theater'>] 
 
-    category = client.category('product design')
+    category = c.category('product design')
     => <Category: 'Product Design'> 
 
     category.keys
