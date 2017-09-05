@@ -1,3 +1,23 @@
+### 0.2.4
+
+* bug fixes
+  * Changing the math for determining if there are more projects available for a given search (because Kickstarter is currently returning 12 projects instead of 20)
+
+### 0.2.3
+
+* bug fixes
+  * Adding CLIENT_ID parameter to Kickstarter api calls that now require it
+
+### 0.2.2
+
+* enhancements
+  * Allowing projects to be searched within categories and states
+
+### 0.2.1
+
+* bug fixes
+  * Sending JSON content-type in all API calls
+
 ### 0.2.0
 
 * Changing the minor version because we've rewritten several things to accommodate Kickstarter's change to public search
