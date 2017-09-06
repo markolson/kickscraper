@@ -20,32 +20,32 @@ describe Kickscraper::Client do
     describe ".find_user" do
       subject(:user) { client.find_user TEST_USER_ID }
 
-      it { should be_nil } # don't know how to do on purely Public API
+      its(:id) { should == TEST_USER_ID }
+      its(:name) { should == 'Zach Braff' }
     end
 
-    describe ".find_product" do
+    describe ".find_project" do
       subject(:project) { client.find_project TEST_PROJECT_ID }
 
-      it { should be_nil } # don't know how to do on purely Public API
+      its(:id) { should == TEST_PROJECT_ID }
+      its(:slug) { should == TEST_PROJECT_SLUG }
+      its(:name) { should == TEST_PROJECT_NAME }
     end
     
     describe ".categories" do
       subject { client.categories }
-
-      it { should eq [] } # don't know how to do on purely Public API
+      it_returns "a collection", Kickscraper::Category
     end
 
     describe ".category" do
       context "loads a category from string" do
         subject { client.category(TEST_CATEGORY_NAME) }
-
-        it { should be_nil } # don't know how to do on purely Public API
+        its(:name) { should eq TEST_CATEGORY_NAME }
       end
 
       context "loads a category from an id" do
         subject { client.category(TEST_CATEGORY_ID) }
-
-        it { should be_nil } # don't know how to do on purely Public API
+        its(:name) { should eq TEST_CATEGORY_NAME }
       end
     end
 

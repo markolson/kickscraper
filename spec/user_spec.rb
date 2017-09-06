@@ -13,7 +13,6 @@ describe Kickscraper::User do
       
     its(:backed_projects) { should have_at_least(0).items } 
     its(:starred_projects) { should have_at_least(0).items }
-    its(:created_projects) { should have_at_least(0).items }
   end
 
   context "reloads" do

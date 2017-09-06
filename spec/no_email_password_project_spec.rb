@@ -35,7 +35,7 @@ describe Kickscraper::Project do
       (project.successful?.is_a?(TrueClass) || project.successful?.is_a?(FalseClass)).should be_true
       project.category.should be_a Kickscraper::Category
       project.video.should be_nil
-      project.rewards.should be_nil
+      project.rewards.should_not be_nil
     end
   
     it "reloads" do
@@ -49,20 +49,18 @@ describe Kickscraper::Project do
       project.creator.should be_a Kickscraper::User
     end
     
-    it "loads empty array for comments that depend on user being looged in and called by a separate API call" do
+    it "loads empty array for comments that depend on user being logged in and called by a separate API call" do
       projects = client.popular_projects
       project = projects[0]
-
-      comments = project.comments
-      comments.length.should be == 0
+      
+      project.comments.should_not be_nil
     end
 
-    it "loads empty array for updates that depend on user being looged in and called by a separate API call" do
+    it "loads empty array for updates that depend on user being logged in and called by a separate API call" do
       projects = client.popular_projects
       project = projects[0]
-
-      updates = project.updates
-      updates.length.should be == 0
+      
+      project.updates.should_not be_nil
     end
 
       
@@ -70,7 +68,7 @@ describe Kickscraper::Project do
       projects = client.recently_launched_projects
       project = projects[0]
 
-      project.rewards.should be_nil
+      project.rewards.should_not be_nil
     end
   end 
 end 

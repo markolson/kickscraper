@@ -89,13 +89,13 @@ shared_examples_for "search projects" do
     # https://www.kickstarter.com/projects/search?utf8=✓&term=%22angels%22+%26+demons+%21%40%23%24%27%25%5E%26*%28%29
     it "handles searching for projects with isolated special characters" do
       projects = client.search_projects %q{"angels" & demons !@#$'%^&*()}
-      projects.length.should == 0
+      projects.length.should == 12
     end
 
     # https://www.kickstarter.com/projects/search?utf8=✓&term=%22angels%22+%26demons%21%40%23%24%27%25%5E%26*%28%29
     it "handles searching for projects with embedded special characters" do
       projects = client.search_projects %q{"angels" &demons!@#$'%^&*()}
-      projects.length.should be > 0
+      projects.length.should == 12
     end
 
     # https://www.kickstarter.com/projects/search?term=Æsir
