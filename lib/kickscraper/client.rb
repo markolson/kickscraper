@@ -66,6 +66,20 @@ module Kickscraper
             end
         end
 
+        def more_updates_available?
+            !@more_updates_url.nil?
+        end
+
+        alias_method :can_load_more_updates, :more_updates_available?
+
+        def load_more_updates
+            if self::more_updates_available?
+                self::process_api_url "updates", @more_updates_url
+            else
+                []
+            end
+        end
+
         def categories
             self::process_api_call "categories", ""
         end
@@ -172,11 +186,26 @@ module Kickscraper
                 
                 return empty_response if body.comments.nil?
                 body.comments.map { |comment| Comment.coerce comment }
+
+            when "update"
+
+                Update.coerce body
                 
             when "updates"
                 
-                return empty_response if body.updates.nil?
-                body.updates.map { |update| Update.coerce update }
+                # Return an empty result set if the body has no updates
+                if body.updates.nil?
+
+                    @more_updates_url = nil
+                    return empty_response
+
+                # Otherwise, set the url that holds the next batch of updates (if available)
+                # and return an array of updates
+                else
+
+                    @more_updates_url = (!body.urls.nil? && !body.urls.api.nil? && !body.urls.api.more_updates.nil? && !body.urls.api.more_updates.empty?) ? body.urls.api.more_updates : nil
+                    return body.updates.map { |update| Update.coerce update }
+                end
                 
             when "categories"
                 
